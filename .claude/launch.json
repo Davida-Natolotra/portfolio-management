@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "portfolio-management",
+      "runtimeExecutable": "/Users/davida/dev/portfolio-management/.claude/serve.sh",
+      "runtimeArgs": [],
+      "port": 4200
+    }
+  ]
+}
