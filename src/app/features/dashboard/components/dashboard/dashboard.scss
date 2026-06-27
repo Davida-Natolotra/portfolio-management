@@ -1,0 +1,103 @@
+.page-header {
+  margin-bottom: 24px;
+  h4 { margin: 0 0 4px; font-size: 20px; font-weight: 600; }
+  .breadcrumb-text { margin: 0; color: #888; font-size: 12px; }
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+
+  @media (max-width: 1100px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+}
+
+::ng-deep .stat-card {
+  overflow: hidden;
+  padding: 0 !important;
+
+  .p-card-body { padding: 0; }
+
+  .stat-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+
+    h3 { margin: 0 0 4px; font-size: 24px; font-weight: 700; }
+    .stat-label { color: #888; font-size: 12px; }
+
+    .stat-icon {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      i { font-size: 22px; }
+    }
+  }
+
+  .stat-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 20px;
+    color: #fff; font-size: 12px;
+    i { font-size: 14px; }
+  }
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 16px;
+  margin-bottom: 20px;
+
+  @media (max-width: 900px) { grid-template-columns: 1fr; }
+}
+
+::ng-deep .chart-card .p-card-body { padding: 16px; }
+
+.side-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+::ng-deep .quarter-card {
+  .p-card-body { padding: 16px; }
+
+  .month-row {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; margin-bottom: 12px;
+    h4 { margin: 0 0 4px; }
+    p { margin: 0; font-size: 12px; }
+  }
+
+  .progress-row {
+    display: flex; justify-content: space-between;
+    font-size: 12px; margin-bottom: 4px; margin-top: 12px;
+    color: #666;
+  }
+
+  .mb-2 { margin-bottom: 12px; }
+  .progress-green .p-progressbar-value { background: #00897b !important; }
+}
+
+::ng-deep .projects-card {
+  .p-card-body { padding: 0; }
+  .p-card-header { padding: 16px 20px; font-weight: 600; font-size: 15px; }
+}
+
+.assignee {
+  display: flex; align-items: center; gap: 12px;
+  .mini-avatar {
+    width: 36px; height: 36px; background: #3f51b5; color: #fff;
+    border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0;
+  }
+  .fw-600 { font-weight: 600; font-size: 13px; }
+  .small { font-size: 11px; }
+}
+
+.text-muted { color: #888; }
+.text-right { text-align: right; }
+.f-right { float: right; }

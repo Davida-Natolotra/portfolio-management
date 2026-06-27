@@ -1,0 +1,62 @@
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a237e 0%, #3f51b5 50%, #7986cb 100%);
+  padding: 20px;
+}
+
+.auth-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+.auth-logo {
+  text-align: center;
+  margin-bottom: 32px;
+
+  .logo-circle {
+    width: 64px; height: 64px;
+    background: #3f51b5; color: #fff;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    i { font-size: 28px; }
+  }
+
+  h2 { margin: 0 0 6px; font-size: 24px; font-weight: 700; color: #1a237e; }
+  p { margin: 0; color: #888; font-size: 14px; }
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex; flex-direction: column; gap: 6px;
+  label { font-size: 13px; font-weight: 600; color: #444; }
+  input { width: 100%; }
+}
+
+.remember-row {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.check-row { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.forgot-link { font-size: 13px; color: #3f51b5; }
+
+.or-text { font-size: 12px; color: #aaa; padding: 0 8px; }
+.social-btns { display: flex; gap: 12px; }
+.signup-text {
+  text-align: center; margin-top: 20px; font-size: 13px; color: #888;
+  a { color: #3f51b5; font-weight: 600; }
+}
+
+::ng-deep .w-full { width: 100% !important; }
+::ng-deep .flex-1 { flex: 1 !important; }
