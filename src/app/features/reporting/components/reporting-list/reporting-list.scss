@@ -1,0 +1,68 @@
+.page-header {
+  margin-bottom: 24px;
+
+  h4 {
+    margin: 0 0 4px;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .breadcrumb-text {
+    margin: 0;
+    color: #888;
+    font-size: 12px;
+  }
+}
+
+.col-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.table-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .p-input-icon-left {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .p-input-icon-left i {
+    position: absolute;
+    left: 10px;
+    color: #aaa;
+  }
+
+  .p-input-icon-left input {
+    padding-left: 30px;
+  }
+}
+
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .mini-avatar {
+    width: 32px;
+    height: 32px;
+    background: #3f51b5;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+}
+
+.action-btns {
+  display: flex;
+  gap: 4px;
+}

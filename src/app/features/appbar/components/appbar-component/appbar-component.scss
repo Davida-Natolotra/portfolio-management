@@ -1,0 +1,21 @@
+
+:host ::ng-deep .p-toolbar {
+  background: var(--p-primary-500);
+  border-color: var(--p-primary-500);
+  color: white;
+
+  .p-button-plain {
+    color: white;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: white !important;
+    }
+  }
+
+  .p-button-contrast {
+    background: white;
+    color: var(--p-primary-500);
+    border-color: white;
+  }
+}

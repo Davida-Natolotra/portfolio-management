@@ -1,0 +1,558 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="reportingForm">
+  <div class="card flex justify-center">
+    <p-stepper [value]="1" class="basis-[50rem]">
+      <p-step-list>
+        <p-step [value]="1">FRAMEWORK &amp; FUNDING</p-step>
+        <p-step [value]="2">ALIGNEMENT STRATÉGIQUE</p-step>
+        <p-step [value]="3">MONITORING TECHNICAL PERFORMANCE</p-step>
+        <p-step [value]="4">QUALITATIVE ANALYSIS</p-step>
+        <p-step [value]="5">RISK MATRIX &amp; ACTION PLAN</p-step>
+      </p-step-list>
+
+      <p-step-panels>
+
+        <!-- ── STEP 1 : FRAMEWORK & FUNDING ────────────────────────────── -->
+        <p-step-panel [value]="1">
+          <ng-template #content let-activateCallback="activateCallback">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+
+              <!-- Region -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Region <span class="text-red-500">*</span></label>
+                <p-autocomplete
+                  (completeMethod)="searchRegion($event)"
+                  [dropdown]="true"
+                  [fluid]="true"
+                  [forceSelection]="true"
+                  [minLength]="0"
+                  [suggestions]="regionSuggestions"
+                  field="name"
+                  formControlName="region"
+                  placeholder="Select a region"></p-autocomplete>
+                @if (reportingForm.get('region')?.invalid && reportingForm.get('region')?.touched) {
+                  <small class="text-red-500">Region is required.</small>
+                }
+              </div>
+
+              <!-- District — disabled until a region is selected -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">District <span class="text-red-500">*</span></label>
+                <p-autocomplete
+                  (completeMethod)="searchDistrict($event)"
+                  [dropdown]="true"
+                  [fluid]="true"
+                  [forceSelection]="true"
+                  [minLength]="0"
+                  [suggestions]="districtSuggestions"
+                  field="name"
+                  formControlName="district"
+                  placeholder="Select a district"></p-autocomplete>
+                @if (reportingForm.get('district')?.invalid && reportingForm.get('district')?.touched) {
+                  <small class="text-red-500">District is required.</small>
+                }
+              </div>
+
+              <!-- Technical Area -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Technical Area <span class="text-red-500">*</span></label>
+                <p-autocomplete
+                  (completeMethod)="searchTechnicalArea($event)"
+                  [dropdown]="true"
+                  [fluid]="true"
+                  [forceSelection]="true"
+                  [minLength]="0"
+                  [suggestions]="technicalAreaSuggestions"
+                  field="name"
+                  formControlName="technical_area"
+                  placeholder="Select a technical area"></p-autocomplete>
+                @if (reportingForm.get('technical_area')?.invalid && reportingForm.get('technical_area')?.touched) {
+                  <small class="text-red-500">Technical area is required.</small>
+                }
+              </div>
+
+              <!-- Area of Cooperation -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Area of Cooperation <span class="text-red-500">*</span></label>
+                <p-autocomplete
+                  (completeMethod)="searchAreaCoop($event)"
+                  [dropdown]="true"
+                  [fluid]="true"
+                  [forceSelection]="true"
+                  [minLength]="0"
+                  [suggestions]="areaCoopSuggestions"
+                  field="name"
+                  formControlName="area_of_cooperation"
+                  placeholder="Select an area of cooperation"></p-autocomplete>
+                @if (reportingForm.get('area_of_cooperation')?.invalid && reportingForm.get('area_of_cooperation')?.touched) {
+                  <small class="text-red-500">Area of cooperation is required.</small>
+                }
+              </div>
+
+              <!-- Type of Contribution — disabled until area_of_cooperation is selected -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Type of Contribution <span class="text-red-500">*</span></label>
+                <p-autocomplete
+                  (completeMethod)="searchTypeContrib($event)"
+                  [dropdown]="true"
+                  [fluid]="true"
+                  [forceSelection]="true"
+                  [minLength]="0"
+                  [suggestions]="typeContribSuggestions"
+                  field="name"
+                  formControlName="type_of_contribution"
+                  placeholder="Select a type of contribution"></p-autocomplete>
+                @if (reportingForm.get('type_of_contribution')?.invalid && reportingForm.get('type_of_contribution')?.touched) {
+                  <small class="text-red-500">Type of contribution is required.</small>
+                }
+              </div>
+
+              <!-- Assigned Funding -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Assigned Funding <span class="text-red-500">*</span></label>
+                <p-inputnumber
+                  [fluid]="true"
+                  [min]="0"
+                  currency="USD"
+                  formControlName="assigned_funding"
+                  mode="currency"
+                  placeholder="Enter funding amount"></p-inputnumber>
+                @if (reportingForm.get('assigned_funding')?.invalid && reportingForm.get('assigned_funding')?.touched) {
+                  <small class="text-red-500">A positive funding amount is required.</small>
+                }
+              </div>
+
+            </div>
+            <div class="flex pt-6 justify-end">
+              <p-button (onClick)="activateCallback(2)" icon="pi pi-arrow-right" iconPos="right" label="Next" />
+            </div>
+          </ng-template>
+        </p-step-panel>
+
+        <!-- ── STEP 2 : ALIGNEMENT STRATÉGIQUE ────────────────────────── -->
+        <p-step-panel [value]="2">
+          <ng-template #content let-activateCallback="activateCallback">
+            <div class="flex flex-col gap-4 py-4">
+
+              <!-- Alignment MOU -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Alignment MOU <span class="text-red-500">*</span></label>
+                <input formControlName="alignment_mou" pInputText placeholder="Enter alignment MOU" />
+                @if (reportingForm.get('alignment_mou')?.invalid && reportingForm.get('alignment_mou')?.touched) {
+                  <small class="text-red-500">Alignment MOU is required.</small>
+                }
+              </div>
+
+              <!-- Reason for Alignment — minimum 50 characters -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Reason for Alignment <span class="text-red-500">*</span></label>
+                <textarea
+                  formControlName="reason_alignment"
+                  pTextarea
+                  placeholder="Describe the reason for alignment (minimum 50 characters)"
+                  rows="4"></textarea>
+                @if (reportingForm.get('reason_alignment')?.invalid && reportingForm.get('reason_alignment')?.touched) {
+                  @if (reportingForm.get('reason_alignment')?.errors?.['required']) {
+                    <small class="text-red-500">Reason for alignment is required.</small>
+                  } @else if (reportingForm.get('reason_alignment')?.errors?.['minlength']) {
+                    <small class="text-red-500">
+                      Minimum 50 characters required
+                      ({{ reportingForm.get('reason_alignment')?.value?.length ?? 0 }}/50).
+                    </small>
+                  }
+                }
+              </div>
+
+              <!-- Alignment AFG Health Strategy -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Alignment AFG Health Strategy <span
+                  class="text-red-500">*</span></label>
+                <p-autocomplete
+                  (completeMethod)="searchAfgHealth($event)"
+                  [dropdown]="true"
+                  [fluid]="true"
+                  [forceSelection]="true"
+                  [minLength]="0"
+                  [suggestions]="afgHealthSuggestions"
+                  field="name"
+                  formControlName="alignment_AFGH"
+                  placeholder="Select AFG Health strategy"></p-autocomplete>
+                @if (reportingForm.get('alignment_AFGH')?.invalid && reportingForm.get('alignment_AFGH')?.touched) {
+                  <small class="text-red-500">AFG Health strategy alignment is required.</small>
+                }
+              </div>
+
+            </div>
+            <div class="flex pt-6 justify-between">
+              <p-button (onClick)="activateCallback(1)" icon="pi pi-arrow-left" label="Back" severity="secondary" />
+              <p-button (onClick)="activateCallback(3)" icon="pi pi-arrow-right" iconPos="right" label="Next" />
+            </div>
+          </ng-template>
+        </p-step-panel>
+
+        <!-- ── STEP 3 : MONITORING TECHNICAL PERFORMANCE ───────────────── -->
+        <p-step-panel [value]="3">
+          <ng-template #content let-activateCallback="activateCallback">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+
+              <!-- Performance Indicator -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Performance Indicator <span class="text-red-500">*</span></label>
+                <p-autocomplete
+                  (completeMethod)="searchMouIndicators($event)"
+                  [dropdown]="true"
+                  [fluid]="true"
+                  [forceSelection]="true"
+                  [minLength]="0"
+                  [suggestions]="mouIndicatorsSuggestions"
+                  field="name"
+                  formControlName="performance_indicator"
+                  placeholder="Select a performance indicator"></p-autocomplete>
+                @if (reportingForm.get('performance_indicator')?.invalid && reportingForm.get('performance_indicator')?.touched) {
+                  <small class="text-red-500">Performance indicator is required.</small>
+                }
+              </div>
+
+              <!-- Related Activity -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Related Activity <span class="text-red-500">*</span></label>
+                <input formControlName="related_activity" pInputText placeholder="Enter related activity" />
+                @if (reportingForm.get('related_activity')?.invalid && reportingForm.get('related_activity')?.touched) {
+                  <small class="text-red-500">Related activity is required.</small>
+                }
+              </div>
+
+              <!-- Activity Status -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Activity Status <span class="text-red-500">*</span></label>
+                <p-select
+                  formControlName="activity_status"
+                  [options]="activityStatusList"
+                  optionLabel="name"
+                  [fluid]="true"
+                  placeholder="Select activity status"></p-select>
+                @if (reportingForm.get('activity_status')?.invalid && reportingForm.get('activity_status')?.touched) {
+                  <small class="text-red-500">Activity status is required.</small>
+                }
+              </div>
+
+              <!-- SENS -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">SENS <span class="text-red-500">*</span></label>
+                <p-autocomplete
+                  (completeMethod)="searchSens($event)"
+                  [dropdown]="true"
+                  [fluid]="true"
+                  [forceSelection]="true"
+                  [minLength]="0"
+                  [suggestions]="sensSuggestions"
+                  field="name"
+                  formControlName="sens"
+                  placeholder="Select SENS"></p-autocomplete>
+                @if (reportingForm.get('sens')?.invalid && reportingForm.get('sens')?.touched) {
+                  <small class="text-red-500">SENS is required.</small>
+                }
+              </div>
+
+              <!-- Data Source Indicator -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Data Source Indicator <span class="text-red-500">*</span></label>
+                <p-autocomplete
+                  (completeMethod)="searchDataSource($event)"
+                  [dropdown]="true"
+                  [fluid]="true"
+                  [forceSelection]="true"
+                  [minLength]="0"
+                  [suggestions]="dataSourceSuggestions"
+                  field="name"
+                  formControlName="data_source_indicator"
+                  placeholder="Select a data source indicator"></p-autocomplete>
+                @if (reportingForm.get('data_source_indicator')?.invalid && reportingForm.get('data_source_indicator')?.touched) {
+                  <small class="text-red-500">Data source indicator is required.</small>
+                }
+              </div>
+
+              <!-- Annual Target -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Annual Target <span class="text-red-500">*</span></label>
+                <p-inputnumber
+                  [fluid]="true"
+                  [min]="0"
+                  [useGrouping]="false"
+                  formControlName="annual_target"
+                  placeholder="Enter annual target"></p-inputnumber>
+                @if (reportingForm.get('annual_target')?.invalid && reportingForm.get('annual_target')?.touched) {
+                  <small class="text-red-500">A valid annual target is required.</small>
+                }
+              </div>
+
+              <!-- Result Achieved -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Result Achieved <span class="text-red-500">*</span></label>
+                <p-inputnumber
+                  [fluid]="true"
+                  [min]="0"
+                  [useGrouping]="false"
+                  formControlName="result_achieved"
+                  placeholder="Enter result achieved" />
+                @if (reportingForm.get('result_achieved')?.invalid && reportingForm.get('result_achieved')?.touched) {
+                  <small class="text-red-500">A valid result achieved value is required.</small>
+                }
+              </div>
+
+              <!-- Achievement Rate — automatic compute, read-only -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Achievement Rate</label>
+                <div
+                  class="px-3 py-2 border border-surface-300 dark:border-surface-600 rounded-md bg-surface-100 dark:bg-surface-800 font-semibold">
+                  {{ achievementRateValue }}%
+                </div>
+              </div>
+
+              <!-- Performance Status — automatic compute, read-only -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Performance Status</label>
+                <div
+                  [class.text-green-600]="performanceStatusValue === 'On Track'"
+                  [class.text-red-600]="performanceStatusValue === 'Off Track'"
+                  [class.text-yellow-600]="performanceStatusValue === 'At Risk'"
+                  class="px-3 py-2 border border-surface-300 dark:border-surface-600 rounded-md bg-surface-100 dark:bg-surface-800 font-semibold">
+                  {{ performanceStatusValue || '—' }}
+                </div>
+              </div>
+
+              <!-- Total Population Covered — auto-filled from selected district, read-only -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Total Population Covered</label>
+                <div
+                  class="px-3 py-2 border border-surface-300 dark:border-surface-600 rounded-md bg-surface-100 dark:bg-surface-800 font-semibold">
+                  {{ totalPopulationCoveredValue ?? '—' }}
+                </div>
+              </div>
+
+              <!-- Total Population Reached — must be ≤ total_population_covered -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Total Population Reached <span class="text-red-500">*</span></label>
+                <p-inputnumber
+                  [fluid]="true"
+                  [min]="0"
+                  [useGrouping]="false"
+                  formControlName="total_population_reached"
+                  placeholder="Enter population reached"></p-inputnumber>
+                @if (reportingForm.get('total_population_reached')?.invalid && reportingForm.get('total_population_reached')?.touched) {
+                  <small class="text-red-500">A valid value is required.</small>
+                }
+                @if (populationReachedError) {
+                  <small class="text-red-500">Must not exceed total population covered.</small>
+                }
+              </div>
+
+              <!-- Female Population Covered -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Female Population Covered <span class="text-red-500">*</span></label>
+                <p-inputnumber
+                  [fluid]="true"
+                  [min]="0"
+                  [useGrouping]="false"
+                  formControlName="total_population_covered_female"
+                  placeholder="Enter female population"></p-inputnumber>
+                @if (reportingForm.get('total_population_covered_female')?.invalid && reportingForm.get('total_population_covered_female')?.touched) {
+                  <small class="text-red-500">A valid value is required.</small>
+                }
+              </div>
+
+              <!-- Male Population Covered — female + male must equal total_population_covered -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Male Population Covered <span class="text-red-500">*</span></label>
+                <p-inputnumber
+                  [fluid]="true"
+                  [min]="0"
+                  [useGrouping]="false"
+                  formControlName="total_population_covered_male"
+                  placeholder="Enter male population"></p-inputnumber>
+                @if (reportingForm.get('total_population_covered_male')?.invalid && reportingForm.get('total_population_covered_male')?.touched) {
+                  <small class="text-red-500">A valid value is required.</small>
+                }
+                @if (genderSumError) {
+                  <small class="text-red-500">Female + male must equal total population covered.</small>
+                }
+              </div>
+
+            </div>
+            <div class="flex pt-6 justify-between">
+              <p-button (onClick)="activateCallback(2)" icon="pi pi-arrow-left" label="Back" severity="secondary" />
+              <p-button (onClick)="activateCallback(4)" icon="pi pi-arrow-right" iconPos="right" label="Next" />
+            </div>
+          </ng-template>
+        </p-step-panel>
+
+        <!-- ── STEP 4 : QUALITATIVE ANALYSIS ──────────────────────────── -->
+        <p-step-panel [value]="4">
+          <ng-template #content let-activateCallback="activateCallback">
+            <div class="flex flex-col gap-4 py-4">
+
+              <!-- Key Success Factors -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Key Success Factors <span class="text-red-500">*</span></label>
+                <textarea
+                  formControlName="key_success"
+                  pTextarea
+                  placeholder="Describe key success factors"
+                  rows="4"></textarea>
+                @if (reportingForm.get('key_success')?.invalid && reportingForm.get('key_success')?.touched) {
+                  <small class="text-red-500">Key success factors are required.</small>
+                }
+              </div>
+
+              <!-- Bottleneck Factors -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Bottleneck Factors <span class="text-red-500">*</span></label>
+                <textarea
+                  formControlName="bottleneck_factors"
+                  pTextarea
+                  placeholder="Describe bottleneck factors"
+                  rows="4"></textarea>
+                @if (reportingForm.get('bottleneck_factors')?.invalid && reportingForm.get('bottleneck_factors')?.touched) {
+                  <small class="text-red-500">Bottleneck factors are required.</small>
+                }
+              </div>
+
+            </div>
+            <div class="flex pt-6 justify-between">
+              <p-button (onClick)="activateCallback(3)" icon="pi pi-arrow-left" label="Back" severity="secondary" />
+              <p-button (onClick)="activateCallback(5)" icon="pi pi-arrow-right" iconPos="right" label="Next" />
+            </div>
+          </ng-template>
+        </p-step-panel>
+
+        <!-- ── STEP 5 : RISK MATRIX & ACTION PLAN ─────────────────────── -->
+        <p-step-panel [value]="5">
+          <ng-template #content let-activateCallback="activateCallback">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+
+              <!-- Risk Alert Identified -->
+              <div class="flex flex-col gap-1 md:col-span-2">
+                <label class="font-medium text-sm">Risk Alert Identified <span class="text-red-500">*</span></label>
+                <textarea
+                  formControlName="risk_alert_identified"
+                  pTextarea
+                  placeholder="Describe the identified risk"
+                  rows="3"></textarea>
+                @if (reportingForm.get('risk_alert_identified')?.invalid && reportingForm.get('risk_alert_identified')?.touched) {
+                  <small class="text-red-500">Risk alert is required.</small>
+                }
+              </div>
+
+              <!-- Impact — select from list 1–15 -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Impact (1–15) <span class="text-red-500">*</span></label>
+                <p-select
+                  [fluid]="true"
+                  [options]="list15"
+                  formControlName="impact"
+                  placeholder="Select impact level" />
+                @if (reportingForm.get('impact')?.invalid && reportingForm.get('impact')?.touched) {
+                  <small class="text-red-500">Impact level is required.</small>
+                }
+              </div>
+
+              <!-- Probability — select from list 1–15 -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Probability (1–15) <span class="text-red-500">*</span></label>
+                <p-select
+                  [fluid]="true"
+                  [options]="list15"
+                  formControlName="probability"
+                  placeholder="Select probability level" />
+                @if (reportingForm.get('probability')?.invalid && reportingForm.get('probability')?.touched) {
+                  <small class="text-red-500">Probability level is required.</small>
+                }
+              </div>
+
+              <!-- Risk Score — automatic compute (impact × probability), read-only -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Risk Score</label>
+                <div
+                  class="px-3 py-2 border border-surface-300 dark:border-surface-600 rounded-md bg-surface-100 dark:bg-surface-800 font-semibold">
+                  {{ riskScoreValue || '—' }}
+                </div>
+              </div>
+
+              <!-- Risk Level — automatic compute, read-only -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Risk Level</label>
+                <div
+                  [class.text-green-600]="riskLevelValue === 'low'"
+                  [class.text-red-600]="riskLevelValue === 'high'"
+                  [class.text-yellow-600]="riskLevelValue === 'moderate'"
+                  class="px-3 py-2 border border-surface-300 dark:border-surface-600 rounded-md bg-surface-100 dark:bg-surface-800 font-semibold">
+                  {{ riskLevelDisplay }}
+                </div>
+              </div>
+
+              <!-- Mitigation Measure — required only when risk_level is "high" or "moderate" -->
+              <div class="flex flex-col gap-1 md:col-span-2">
+                <label class="font-medium text-sm">
+                  Mitigation Measure Proposed
+                  @if (riskLevelValue === 'high' || riskLevelValue === 'moderate') {
+                    <span class="text-red-500">*</span>
+                  }
+                </label>
+                <textarea
+                  formControlName="measure_mitigation_proposed"
+                  pTextarea
+                  placeholder="Describe proposed mitigation measure"
+                  rows="3"></textarea>
+                @if (reportingForm.get('measure_mitigation_proposed')?.invalid && reportingForm.get('measure_mitigation_proposed')?.touched) {
+                  <small class="text-red-500">Mitigation measure is required for high or moderate risk.</small>
+                }
+              </div>
+
+              <!-- Main Responsible -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Main Responsible <span class="text-red-500">*</span></label>
+                <input formControlName="main_responsible" pInputText placeholder="Enter responsible person or team" />
+                @if (reportingForm.get('main_responsible')?.invalid && reportingForm.get('main_responsible')?.touched) {
+                  <small class="text-red-500">Main responsible is required.</small>
+                }
+              </div>
+
+              <!-- Due Date — French format DD-MM-YYYY -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Due Date <span class="text-red-500">*</span></label>
+                <p-datepicker
+                  [fluid]="true"
+                  [showIcon]="true"
+                  dateFormat="dd-mm-yy"
+                  formControlName="due_date"
+                  placeholder="DD-MM-YYYY"></p-datepicker>
+                @if (reportingForm.get('due_date')?.invalid && reportingForm.get('due_date')?.touched) {
+                  <small class="text-red-500">Due date is required.</small>
+                }
+              </div>
+
+              <!-- Action Status — select from getActionStatusList -->
+              <div class="flex flex-col gap-1">
+                <label class="font-medium text-sm">Action Status <span class="text-red-500">*</span></label>
+                <p-select
+                  [fluid]="true"
+                  [options]="actionStatusList"
+                  formControlName="action_status"
+                  optionLabel="name"
+                  placeholder="Select action status" />
+                @if (reportingForm.get('action_status')?.invalid && reportingForm.get('action_status')?.touched) {
+                  <small class="text-red-500">Action status is required.</small>
+                }
+              </div>
+
+            </div>
+            <div class="flex pt-6 justify-between">
+              <p-button (onClick)="activateCallback(4)" icon="pi pi-arrow-left" label="Back" severity="secondary" />
+              <p-button icon="pi pi-check" iconPos="right" label="Submit" severity="success" type="submit" />
+            </div>
+          </ng-template>
+        </p-step-panel>
+
+      </p-step-panels>
+    </p-stepper>
+  </div>
+</form>
