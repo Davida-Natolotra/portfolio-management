@@ -70,22 +70,31 @@ export class ReportingEdit implements OnInit, OnDestroy {
   // Autocomplete data lists
   regionList: OrganisationUnitInterface[] = [];
   regionSuggestions: OrganisationUnitInterface[] = [];
+  regionLoading = false;
   districtList: OrganisationUnitInterface[] = [];
   districtSuggestions: OrganisationUnitInterface[] = [];
+  districtLoading = false;
   technicalAreaList: TechnicalAreaInterface[] = [];
   technicalAreaSuggestions: TechnicalAreaInterface[] = [];
+  technicalAreaLoading = false;
   areaCoopList: AreaCoopInterface[] = [];
   areaCoopSuggestions: AreaCoopInterface[] = [];
+  areaCoopLoading = false;
   typeContribList: AreaCoopInterface[] = [];
   typeContribSuggestions: AreaCoopInterface[] = [];
+  typeContribLoading = false;
   afgHealthList: AFGHealthStrategyInterface[] = [];
   afgHealthSuggestions: AFGHealthStrategyInterface[] = [];
+  afgHealthLoading = false;
   mouIndicatorsList: PerformanceIndicatorsInterface[] = [];
   mouIndicatorsSuggestions: PerformanceIndicatorsInterface[] = [];
+  mouIndicatorsLoading = false;
   sensList: SensInterface[] = [];
   sensSuggestions: SensInterface[] = [];
+  sensLoading = false;
   dataSourceList: DataSourceIndicatorsInterface[] = [];
   dataSourceSuggestions: DataSourceIndicatorsInterface[] = [];
+  dataSourceLoading = false;
   list15: number[] = [];
   actionStatusList: action_status[] = [];
   activityStatusList: activity_status[] = [];
@@ -93,24 +102,24 @@ export class ReportingEdit implements OnInit, OnDestroy {
   reportingForm = this.fb.group(
     {
       // A - BLOC 1: FRAMEWORK & FUNDING
-      region: [null, Validators.required], // autocomplete from getRegion
-      district: [{ value: null, disabled: true }, Validators.required], // autocomplete, enabled after region selected, resets when region changes, list from getDistrict(region.id)
-      technical_area: [null, Validators.required], // autocomplete from getTechnicalArea
-      area_of_cooperation: [null, Validators.required], // autocomplete from getAreaOfCooperation
-      type_of_contribution: [{ value: null, disabled: true }, Validators.required], // autocomplete, enabled after area_of_cooperation selected, list from getTypeOfContribution(area_of_cooperation.id)
-      assigned_funding: [null, [Validators.required, Validators.min(0)]], // positive number
+      region: [null as OrganisationUnitInterface | null, Validators.required],
+      district: [{ value: null as OrganisationUnitInterface | null, disabled: true }, Validators.required],
+      technical_area: [null as TechnicalAreaInterface | null, Validators.required],
+      area_of_cooperation: [null as AreaCoopInterface | null, Validators.required],
+      type_of_contribution: [{ value: null as AreaCoopInterface | null, disabled: true }, Validators.required],
+      assigned_funding: [null as number | null, [Validators.required, Validators.min(0)]],
 
       // B - BLOC 2: ALIGNEMENT STRATÉGIQUE
-      alignment_mou: ['', Validators.required], // text input
-      reason_alignment: ['', [Validators.required, Validators.minLength(50)]], // textarea, minimum 50 characters
-      alignment_AFGH: [null, Validators.required], // autocomplete from getAFGHealthStrategy
+      alignment_mou: ['', Validators.required],
+      reason_alignment: ['', [Validators.required, Validators.minLength(50)]],
+      alignment_AFGH: [null as AFGHealthStrategyInterface | null, Validators.required],
 
       // C - BLOC 3: MONITORING TECHNICAL PERFORMANCE
-      performance_indicator: [null, Validators.required], // autocomplete from getMOUIndicators
-      related_activity: ['', Validators.required], // text input
-      activity_status: [null, Validators.required], // option list from getActivityStatusList
-      sens: [null, Validators.required], // autocomplete from getSensList
-      data_source_indicator: [null, Validators.required], // autocomplete from getDataSourceIndicator
+      performance_indicator: [null as PerformanceIndicatorsInterface | null, Validators.required],
+      related_activity: ['', Validators.required],
+      activity_status: [null as activity_status | null, Validators.required],
+      sens: [null as SensInterface | null, Validators.required],
+      data_source_indicator: [null as DataSourceIndicatorsInterface | null, Validators.required],
       annual_target: [null, [Validators.required, Validators.min(0)]], // positive integer
       result_achieved: [null, [Validators.required, Validators.min(0)]], // positive integer
       achievement_rate: [{ value: 0, disabled: true }], // automatic compute (result_achieved / annual_target * 100), read-only
@@ -126,8 +135,8 @@ export class ReportingEdit implements OnInit, OnDestroy {
 
       // E - BLOC 5: RISK MATRIX & ACTION PLAN
       risk_alert_identified: ['', Validators.required], // textarea
-      impact: [null, Validators.required], // select from getList15
-      probability: [null, Validators.required], // select from getList15
+      impact: [null, Validators.required], // select from getList15 (1–5)
+      probability: [null, Validators.required], // select from getList15 (1–5)
       risk_score: [{ value: 0, disabled: true }], // automatic compute: impact * probability, read-only
       risk_level: [{ value: '', disabled: true }], // automatic compute: "high" if 15 < score ≤ 25, "moderate" if 5 < score ≤ 12, "low" if 1 < score ≤ 4, read-only
       measure_mitigation_proposed: [''], // textarea, mandatory when risk_level is "high" or "moderate"
@@ -233,7 +242,7 @@ export class ReportingEdit implements OnInit, OnDestroy {
   searchMouIndicators(event: any): void {
     const q = (event.query as string).toLowerCase().trim();
     this.mouIndicatorsSuggestions = q
-      ? this.mouIndicatorsList.filter((m) => m.name.toLowerCase().includes(q))
+      ? this.mouIndicatorsList.filter((m) => m.indicator_name.toLowerCase().includes(q))
       : [...this.mouIndicatorsList];
   }
 
@@ -253,42 +262,67 @@ export class ReportingEdit implements OnInit, OnDestroy {
 
   onSubmit(): void {
     if (this.reportingForm.valid) {
-      console.log(this.reportingForm.getRawValue());
+      const raw = this.reportingForm.getRawValue();
+      const payload = {
+        ...raw,
+        region: raw.region?.id ?? raw.region,
+        district: raw.district?.id ?? raw.district,
+        technical_area: raw.technical_area?.id ?? raw.technical_area,
+        area_of_cooperation: raw.area_of_cooperation?.id ?? raw.area_of_cooperation,
+        type_of_contribution: raw.type_of_contribution?.id ?? raw.type_of_contribution,
+        alignment_AFGH: raw.alignment_AFGH?.id ?? raw.alignment_AFGH,
+        performance_indicator: raw.performance_indicator?.id ?? raw.performance_indicator,
+        sens: raw.sens?.id ?? raw.sens,
+        data_source_indicator: raw.data_source_indicator?.id ?? raw.data_source_indicator,
+      };
+      console.log(payload);
     } else {
       this.reportingForm.markAllAsTouched();
     }
   }
 
   private loadStaticData(): void {
+    this.regionLoading = true;
     this.metadataAPI
       .getRegion()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => (this.regionList = d));
+      .subscribe((d) => { this.regionList = d; this.regionSuggestions = [...d]; this.regionLoading = false; });
+
+    this.technicalAreaLoading = true;
     this.metadataAPI
       .getTechnicalArea()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => (this.technicalAreaList = d));
+      .subscribe((d) => { this.technicalAreaList = d; this.technicalAreaSuggestions = [...d]; this.technicalAreaLoading = false; });
+
+    this.areaCoopLoading = true;
     this.metadataAPI
       .getAreaOfCooperation()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => (this.areaCoopList = d));
+      .subscribe((d) => { this.areaCoopList = d; this.areaCoopSuggestions = [...d]; this.areaCoopLoading = false; });
+
+    this.afgHealthLoading = true;
     this.metadataAPI
       .getAFGHealthStrategy()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => (this.afgHealthList = d));
+      .subscribe((d) => { this.afgHealthList = d; this.afgHealthSuggestions = [...d]; this.afgHealthLoading = false; });
+
+    this.sensLoading = true;
     this.metadataAPI
       .getSensList()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => (this.sensList = d));
-    // These APIs return a single object — wrap in array for autocomplete
+      .subscribe((d) => { this.sensList = d; this.sensSuggestions = [...d]; this.sensLoading = false; });
+
+    this.mouIndicatorsLoading = true;
     this.metadataAPI
       .getMOUIndicators()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => (this.mouIndicatorsList = d));
+      .subscribe((d) => { this.mouIndicatorsList = d; this.mouIndicatorsSuggestions = [...d]; this.mouIndicatorsLoading = false; });
+
+    this.dataSourceLoading = true;
     this.metadataAPI
       .getDataSourceIndicator()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => (this.dataSourceList = [d]));
+      .subscribe((d) => { this.dataSourceList = d; this.dataSourceSuggestions = [...d]; this.dataSourceLoading = false; });
     this.metadataAPI
       .getList15()
       .pipe(takeUntil(this.destroy$))
@@ -321,12 +355,11 @@ export class ReportingEdit implements OnInit, OnDestroy {
 
         if (region?.id) {
           f.get('district')!.enable({ emitEvent: false });
+          this.districtLoading = true;
           this.metadataAPI
             .getDistrict(region.id)
             .pipe(takeUntil(this.destroy$))
-            .subscribe((d) => {
-              this.districtList = d;
-            });
+            .subscribe((d) => { this.districtList = d; this.districtLoading = false; });
         }
       });
 
@@ -365,12 +398,11 @@ export class ReportingEdit implements OnInit, OnDestroy {
 
         if (areaCoop?.id) {
           f.get('type_of_contribution')!.enable({ emitEvent: false });
+          this.typeContribLoading = true;
           this.metadataAPI
             .getTypeOfContribution(areaCoop.id)
             .pipe(takeUntil(this.destroy$))
-            .subscribe((d) => {
-              this.typeContribList = d;
-            });
+            .subscribe((d) => { this.typeContribList = d; this.typeContribLoading = false; });
         }
       });
 

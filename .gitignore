@@ -11,6 +11,12 @@
 npm-debug.log
 yarn-error.log
 
+# Yarn Berry
+.yarn/install-state.gz
+.yarn/unplugged/
+.pnp.cjs
+.pnp.loader.mjs
+
 # IDEs and editors
 .idea/
 .project

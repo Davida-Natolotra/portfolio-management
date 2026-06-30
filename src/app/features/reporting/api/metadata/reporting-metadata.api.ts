@@ -26,7 +26,7 @@ export class ReportingMetadataApi {
   }
 
   getDistrict(regionId: string) {
-    return this.http.get<OrganisationUnitInterface[]>(`${this.backendUrl}/metadata/${regionId}`);
+    return this.http.get<OrganisationUnitInterface[]>(`${this.backendUrl}/metadata/district/${regionId}`);
   }
 
   getTechnicalArea(): Observable<TechnicalAreaInterface[]> {
@@ -38,7 +38,7 @@ export class ReportingMetadataApi {
   }
 
   getTypeOfContribution(areaOfCooperationId: string): Observable<AreaCoopInterface[]> {
-    return this.http.get<AreaCoopInterface[]>(`${this.backendUrl}/metadata/areaOfCooperation`);
+    return this.http.get<AreaCoopInterface[]>(`${this.backendUrl}/metadata/areaOfCooperation/${areaOfCooperationId}/subAreas`);
   }
 
   getAFGHealthStrategy(): Observable<AFGHealthStrategyInterface[]> {
@@ -49,13 +49,13 @@ export class ReportingMetadataApi {
 
   getMOUIndicators(): Observable<PerformanceIndicatorsInterface[]> {
     return this.http.get<PerformanceIndicatorsInterface[]>(
-      `${this.backendUrl}/metadata/mouIndicators`,
+      `${this.backendUrl}/metadata/indicators`,
     );
   }
 
-  getDataSourceIndicator(): Observable<DataSourceIndicatorsInterface> {
-    return this.http.get<DataSourceIndicatorsInterface>(
-      `${this.backendUrl}/metadata/mouIndicators`,
+  getDataSourceIndicator(): Observable<DataSourceIndicatorsInterface[]> {
+    return this.http.get<DataSourceIndicatorsInterface[]>(
+      `${this.backendUrl}/metadata/dataSource`,
     );
   }
 

@@ -22,11 +22,13 @@
                 <p-autocomplete
                   (completeMethod)="searchRegion($event)"
                   [dropdown]="true"
+                  [emptyMessage]="regionLoading ? 'Loading...' : 'No results found'"
                   [fluid]="true"
                   [forceSelection]="true"
+
                   [minLength]="0"
                   [suggestions]="regionSuggestions"
-                  field="name"
+                  optionLabel="name"
                   formControlName="region"
                   placeholder="Select a region"></p-autocomplete>
                 @if (reportingForm.get('region')?.invalid && reportingForm.get('region')?.touched) {
@@ -40,11 +42,12 @@
                 <p-autocomplete
                   (completeMethod)="searchDistrict($event)"
                   [dropdown]="true"
+                  [emptyMessage]="districtLoading ? 'Loading...' : 'No results found'"
                   [fluid]="true"
                   [forceSelection]="true"
                   [minLength]="0"
                   [suggestions]="districtSuggestions"
-                  field="name"
+                  optionLabel="name"
                   formControlName="district"
                   placeholder="Select a district"></p-autocomplete>
                 @if (reportingForm.get('district')?.invalid && reportingForm.get('district')?.touched) {
@@ -58,11 +61,12 @@
                 <p-autocomplete
                   (completeMethod)="searchTechnicalArea($event)"
                   [dropdown]="true"
+                  [emptyMessage]="technicalAreaLoading ? 'Loading...' : 'No results found'"
                   [fluid]="true"
                   [forceSelection]="true"
                   [minLength]="0"
                   [suggestions]="technicalAreaSuggestions"
-                  field="name"
+                  optionLabel="name"
                   formControlName="technical_area"
                   placeholder="Select a technical area"></p-autocomplete>
                 @if (reportingForm.get('technical_area')?.invalid && reportingForm.get('technical_area')?.touched) {
@@ -76,11 +80,12 @@
                 <p-autocomplete
                   (completeMethod)="searchAreaCoop($event)"
                   [dropdown]="true"
+                  [emptyMessage]="areaCoopLoading ? 'Loading...' : 'No results found'"
                   [fluid]="true"
                   [forceSelection]="true"
                   [minLength]="0"
                   [suggestions]="areaCoopSuggestions"
-                  field="name"
+                  optionLabel="name"
                   formControlName="area_of_cooperation"
                   placeholder="Select an area of cooperation"></p-autocomplete>
                 @if (reportingForm.get('area_of_cooperation')?.invalid && reportingForm.get('area_of_cooperation')?.touched) {
@@ -94,11 +99,12 @@
                 <p-autocomplete
                   (completeMethod)="searchTypeContrib($event)"
                   [dropdown]="true"
+                  [emptyMessage]="typeContribLoading ? 'Loading...' : 'No results found'"
                   [fluid]="true"
                   [forceSelection]="true"
                   [minLength]="0"
                   [suggestions]="typeContribSuggestions"
-                  field="name"
+                  optionLabel="name"
                   formControlName="type_of_contribution"
                   placeholder="Select a type of contribution"></p-autocomplete>
                 @if (reportingForm.get('type_of_contribution')?.invalid && reportingForm.get('type_of_contribution')?.touched) {
@@ -169,11 +175,12 @@
                 <p-autocomplete
                   (completeMethod)="searchAfgHealth($event)"
                   [dropdown]="true"
+                  [emptyMessage]="afgHealthLoading ? 'Loading...' : 'No results found'"
                   [fluid]="true"
                   [forceSelection]="true"
                   [minLength]="0"
                   [suggestions]="afgHealthSuggestions"
-                  field="name"
+                  optionLabel="name"
                   formControlName="alignment_AFGH"
                   placeholder="Select AFG Health strategy"></p-autocomplete>
                 @if (reportingForm.get('alignment_AFGH')?.invalid && reportingForm.get('alignment_AFGH')?.touched) {
@@ -200,11 +207,12 @@
                 <p-autocomplete
                   (completeMethod)="searchMouIndicators($event)"
                   [dropdown]="true"
+                  [emptyMessage]="mouIndicatorsLoading ? 'Loading...' : 'No results found'"
                   [fluid]="true"
                   [forceSelection]="true"
                   [minLength]="0"
                   [suggestions]="mouIndicatorsSuggestions"
-                  field="name"
+                  optionLabel="indicator_name"
                   formControlName="performance_indicator"
                   placeholder="Select a performance indicator"></p-autocomplete>
                 @if (reportingForm.get('performance_indicator')?.invalid && reportingForm.get('performance_indicator')?.touched) {
@@ -228,6 +236,7 @@
                   formControlName="activity_status"
                   [options]="activityStatusList"
                   optionLabel="name"
+                  optionValue="id"
                   [fluid]="true"
                   placeholder="Select activity status"></p-select>
                 @if (reportingForm.get('activity_status')?.invalid && reportingForm.get('activity_status')?.touched) {
@@ -241,11 +250,12 @@
                 <p-autocomplete
                   (completeMethod)="searchSens($event)"
                   [dropdown]="true"
+                  [emptyMessage]="sensLoading ? 'Loading...' : 'No results found'"
                   [fluid]="true"
                   [forceSelection]="true"
                   [minLength]="0"
                   [suggestions]="sensSuggestions"
-                  field="name"
+                  optionLabel="name"
                   formControlName="sens"
                   placeholder="Select SENS"></p-autocomplete>
                 @if (reportingForm.get('sens')?.invalid && reportingForm.get('sens')?.touched) {
@@ -259,11 +269,12 @@
                 <p-autocomplete
                   (completeMethod)="searchDataSource($event)"
                   [dropdown]="true"
+                  [emptyMessage]="dataSourceLoading ? 'Loading...' : 'No results found'"
                   [fluid]="true"
                   [forceSelection]="true"
                   [minLength]="0"
                   [suggestions]="dataSourceSuggestions"
-                  field="name"
+                  optionLabel="name"
                   formControlName="data_source_indicator"
                   placeholder="Select a data source indicator"></p-autocomplete>
                 @if (reportingForm.get('data_source_indicator')?.invalid && reportingForm.get('data_source_indicator')?.touched) {
@@ -442,9 +453,9 @@
                 }
               </div>
 
-              <!-- Impact — select from list 1–15 -->
+              <!-- Impact — select from list 1–5 -->
               <div class="flex flex-col gap-1">
-                <label class="font-medium text-sm">Impact (1–15) <span class="text-red-500">*</span></label>
+                <label class="font-medium text-sm">Impact (1–5) <span class="text-red-500">*</span></label>
                 <p-select
                   [fluid]="true"
                   [options]="list15"
@@ -455,9 +466,9 @@
                 }
               </div>
 
-              <!-- Probability — select from list 1–15 -->
+              <!-- Probability — select from list 1–5 -->
               <div class="flex flex-col gap-1">
-                <label class="font-medium text-sm">Probability (1–15) <span class="text-red-500">*</span></label>
+                <label class="font-medium text-sm">Probability (1–5) <span class="text-red-500">*</span></label>
                 <p-select
                   [fluid]="true"
                   [options]="list15"
@@ -538,6 +549,7 @@
                   [options]="actionStatusList"
                   formControlName="action_status"
                   optionLabel="name"
+                  optionValue="id"
                   placeholder="Select action status" />
                 @if (reportingForm.get('action_status')?.invalid && reportingForm.get('action_status')?.touched) {
                   <small class="text-red-500">Action status is required.</small>

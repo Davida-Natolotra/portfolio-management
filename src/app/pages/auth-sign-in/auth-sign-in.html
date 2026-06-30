@@ -6,11 +6,17 @@
       <p>Sign in to your account</p>
     </div>
 
-    <form class="auth-form">
+    <form class="auth-form" (ngSubmit)="submit()">
+      @if (error()) {
+        <div class="error-banner">
+          <i class="pi pi-exclamation-circle"></i> {{ error() }}
+        </div>
+      }
+
       <div class="field">
-        <label for="email">Email Address</label>
-        <input pInputText id="email" type="email" placeholder="john@example.com"
-          [ngModel]="email()" (ngModelChange)="email.set($event)" />
+        <label for="username">Username</label>
+        <input pInputText id="username" type="text" placeholder="Enter your username"
+          [ngModel]="username()" (ngModelChange)="username.set($event)" name="username" required />
       </div>
 
       <div class="field">
@@ -22,31 +28,29 @@
           [toggleMask]="true"
           styleClass="w-full"
           [ngModel]="password()"
-          (ngModelChange)="password.set($event)" />
+          (ngModelChange)="password.set($event)"
+          name="password" />
       </div>
 
       <div class="remember-row">
         <div class="check-row">
           <p-checkbox [binary]="true" inputId="remember"
-            [ngModel]="remember()" (ngModelChange)="remember.set($event)" />
+            [ngModel]="remember()" (ngModelChange)="remember.set($event)" name="remember" />
           <label for="remember">Remember me</label>
         </div>
         <a href="#" class="forgot-link">Forgot password?</a>
       </div>
 
-      <p-button label="Sign In" icon="pi pi-sign-in" styleClass="w-full" [routerLink]="['/dashboard']" />
-
-      <p-divider align="center"><span class="or-text">OR</span></p-divider>
-
-      <div class="social-btns">
-        <p-button icon="pi pi-google" label="Google" severity="secondary" [outlined]="true" styleClass="flex-1" />
-        <p-button icon="pi pi-github" label="GitHub" severity="contrast" [outlined]="true" styleClass="flex-1" />
-      </div>
+      <p-button
+        type="submit"
+        label="Sign In"
+        icon="pi pi-sign-in"
+        styleClass="w-full"
+        [loading]="loading()" />
     </form>
 
     <p class="signup-text">
-      Don't have an account?
-      <a [routerLink]="['/auth/register']">Create one</a>
+      Don't have an account? <a href="#">Contact your administrator</a>
     </p>
   </div>
 </div>

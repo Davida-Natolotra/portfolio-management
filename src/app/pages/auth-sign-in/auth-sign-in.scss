@@ -39,6 +39,18 @@
   gap: 16px;
 }
 
+.error-banner {
+  background: #fdecea;
+  color: #c62828;
+  border: 1px solid #f5c6c6;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .field {
   display: flex; flex-direction: column; gap: 6px;
   label { font-size: 13px; font-weight: 600; color: #444; }

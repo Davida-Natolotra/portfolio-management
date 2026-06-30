@@ -86,7 +86,7 @@ export interface SensInterface {
 
 export interface PerformanceIndicatorsInterface {
   id: string;
-  name: string;
+  indicator_name: string;
 }
 
 export interface PopDistrictInterface {
