@@ -1,12 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ReportingList } from '../../features/reporting/components/reporting-list/reporting-list';
-import { ReportingEdit } from '../../features/reporting/components/reporting-edit/reporting-edit';
 import { ButtonModule } from 'primeng/button';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reporting',
-  imports: [ReportingList, ReportingEdit, ButtonModule],
+  imports: [ReportingList, ButtonModule],
   templateUrl: './reporting.html',
   styleUrl: './reporting.scss',
 })
-export class Reporting {}
+export class Reporting {
+  router = inject(Router);
+
+  gotoEditReport() {
+    this.router.navigate(['edit-report']);
+  }
+}

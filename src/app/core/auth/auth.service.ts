@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 interface TokenResponse {
   access: string;
@@ -28,7 +28,7 @@ export class AuthService {
   refreshToken() {
     const refresh = this.getRefreshToken();
     return this.http
-      .post<{ access: string }>(environment.tokenUrl + 'refresh/', { refresh })
+      .post<{ access: string }>(environment.tokenUrl + 'refresh/', { refresh: refresh })
       .pipe(tap(({ access }) => localStorage.setItem(ACCESS_TOKEN_KEY, access)));
   }
 

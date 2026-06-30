@@ -9,8 +9,7 @@ export const routes: Routes = [
       {
         path: 'sign-in',
         canActivate: [guestGuard],
-        loadComponent: () =>
-          import('./pages/auth-sign-in/auth-sign-in').then(m => m.AuthSignIn),
+        loadComponent: () => import('./pages/auth-sign-in/auth-sign-in').then((m) => m.AuthSignIn),
       },
       { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
     ],
@@ -18,17 +17,23 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard),
+    loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
   },
   {
     path: 'reporting',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/reporting/reporting').then(m => m.Reporting),
+    loadComponent: () => import('./pages/reporting/reporting').then((m) => m.Reporting),
+  },
+  {
+    path: 'edit-report',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/edit-reporting/edit-reporting').then((m) => m.EditReporting),
   },
   {
     path: 'ip-profile',
     canActivate: [authGuard],
-    loadComponent: () => import('./pages/ip-profile/ip-profile').then(m => m.IpProfile),
+    loadComponent: () => import('./pages/ip-profile/ip-profile').then((m) => m.IpProfile),
   },
   { path: '**', redirectTo: 'dashboard' },
 ];

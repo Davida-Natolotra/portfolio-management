@@ -9,10 +9,11 @@ import {
   OrganisationUnitInterface,
   PerformanceIndicatorsInterface,
   SensInterface,
-  TechnicalAreaInterface
+  TechnicalAreaInterface,
+  List15Interface
 } from '../../models/reporting.interface';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../../environments/environment.development';
+import { environment } from '../../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -30,48 +31,42 @@ export class ReportingMetadataApi {
   }
 
   getTechnicalArea(): Observable<TechnicalAreaInterface[]> {
-    return this.http.get<TechnicalAreaInterface[]>(`${this.backendUrl}/metadata/technicalArea`);
+    return this.http.get<TechnicalAreaInterface[]>(`${this.backendUrl}/technical-areas/`);
   }
 
   getAreaOfCooperation(): Observable<AreaCoopInterface[]> {
-    return this.http.get<AreaCoopInterface[]>(`${this.backendUrl}/metadata/areaOfCooperation`);
+    return this.http.get<AreaCoopInterface[]>(`${this.backendUrl}/area-coop/`);
   }
 
   getTypeOfContribution(areaOfCooperationId: string): Observable<AreaCoopInterface[]> {
-    return this.http.get<AreaCoopInterface[]>(`${this.backendUrl}/metadata/areaOfCooperation/${areaOfCooperationId}/subAreas`);
+    return this.http.get<AreaCoopInterface[]>(`${this.backendUrl}/area-coop/${areaOfCooperationId}/sub-areas`);
   }
 
   getAFGHealthStrategy(): Observable<AFGHealthStrategyInterface[]> {
-    return this.http.get<AFGHealthStrategyInterface[]>(
-      `${this.backendUrl}/metadata/afgHealthStrategy`,
-    );
+    return this.http.get<AFGHealthStrategyInterface[]>(`${this.backendUrl}/afg-health-strategy/`);
   }
 
   getMOUIndicators(): Observable<PerformanceIndicatorsInterface[]> {
-    return this.http.get<PerformanceIndicatorsInterface[]>(
-      `${this.backendUrl}/metadata/indicators`,
-    );
+    return this.http.get<PerformanceIndicatorsInterface[]>(`${this.backendUrl}/indicators/`);
   }
 
   getDataSourceIndicator(): Observable<DataSourceIndicatorsInterface[]> {
-    return this.http.get<DataSourceIndicatorsInterface[]>(
-      `${this.backendUrl}/metadata/dataSource`,
-    );
+    return this.http.get<DataSourceIndicatorsInterface[]>(`${this.backendUrl}/data-source-indicators/`);
   }
 
   getSensList(): Observable<SensInterface[]> {
-    return this.http.get<SensInterface[]>(`${this.backendUrl}/metadata/sens`);
+    return this.http.get<SensInterface[]>(`${this.backendUrl}/sens/`);
   }
 
   getActionStatusList(): Observable<action_status[]> {
-    return this.http.get<action_status[]>(`${this.backendUrl}/metadata/actionstatus`);
+    return this.http.get<action_status[]>(`${this.backendUrl}/action-status/`);
   }
 
   getActivityStatusList(): Observable<activity_status[]> {
-    return this.http.get<activity_status[]>(`${this.backendUrl}/metadata/activitystatus`);
+    return this.http.get<activity_status[]>(`${this.backendUrl}/activity-status/`);
   }
 
-  getList15(): Observable<Number[]> {
-    return this.http.get<number[]>(`${this.backendUrl}/metadata/list15`);
+  getList15(): Observable<List15Interface[]> {
+    return this.http.get<List15Interface[]>(`${this.backendUrl}/list-1-5/`);
   }
 }

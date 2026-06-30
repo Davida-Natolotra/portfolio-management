@@ -33,11 +33,8 @@ export interface FrameworkFundingInterface {
 export interface OrganisationUnitInterface {
   id: string;
   name: string;
-  shortName: string;
-  parent: {
-    id: string;
-  };
-  level: Number;
+  parent: string | null;
+  level: number;
 }
 
 export interface TechnicalAreaInterface {
@@ -91,7 +88,14 @@ export interface PerformanceIndicatorsInterface {
 
 export interface PopDistrictInterface {
   id: string;
-  population: number;
+  nb_population: number;
+  organisation_unit: string;
+  year: number;
+}
+
+export interface List15Interface {
+  id: number;
+  number: number;
 }
 
 export interface action_status {

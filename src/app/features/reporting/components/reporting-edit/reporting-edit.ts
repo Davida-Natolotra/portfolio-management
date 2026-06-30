@@ -22,6 +22,7 @@ import {
   action_status,
   activity_status,
   AFGHealthStrategyInterface,
+  List15Interface,
   AreaCoopInterface,
   DataSourceIndicatorsInterface,
   OrganisationUnitInterface,
@@ -95,7 +96,7 @@ export class ReportingEdit implements OnInit, OnDestroy {
   dataSourceList: DataSourceIndicatorsInterface[] = [];
   dataSourceSuggestions: DataSourceIndicatorsInterface[] = [];
   dataSourceLoading = false;
-  list15: number[] = [];
+  list15: List15Interface[] = [];
   actionStatusList: action_status[] = [];
   activityStatusList: activity_status[] = [];
   private fb = inject(FormBuilder);
@@ -326,7 +327,7 @@ export class ReportingEdit implements OnInit, OnDestroy {
     this.metadataAPI
       .getList15()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => (this.list15 = (d as number[]).map(Number)));
+      .subscribe((d) => (this.list15 = d));
     this.metadataAPI
       .getActionStatusList()
       .pipe(takeUntil(this.destroy$))
@@ -375,7 +376,7 @@ export class ReportingEdit implements OnInit, OnDestroy {
             .getPopulationDistrict(district.id)
             .pipe(takeUntil(this.destroy$))
             .subscribe((d) => {
-              (f.get('total_population_covered')! as AbstractControl<any>).setValue(d.population, {
+              (f.get('total_population_covered')! as AbstractControl<any>).setValue(d.nb_population, {
                 emitEvent: false,
               });
             });

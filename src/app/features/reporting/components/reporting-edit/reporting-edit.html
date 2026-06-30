@@ -459,6 +459,8 @@
                 <p-select
                   [fluid]="true"
                   [options]="list15"
+                  optionLabel="number"
+                  optionValue="number"
                   formControlName="impact"
                   placeholder="Select impact level" />
                 @if (reportingForm.get('impact')?.invalid && reportingForm.get('impact')?.touched) {
@@ -472,6 +474,8 @@
                 <p-select
                   [fluid]="true"
                   [options]="list15"
+                  optionLabel="number"
+                  optionValue="number"
                   formControlName="probability"
                   placeholder="Select probability level" />
                 @if (reportingForm.get('probability')?.invalid && reportingForm.get('probability')?.touched) {
