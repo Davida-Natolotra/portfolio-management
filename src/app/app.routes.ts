@@ -25,7 +25,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/reporting/reporting').then((m) => m.Reporting),
   },
   {
-    path: 'edit-report',
+    path: 'edit-report/:id',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/edit-reporting/edit-reporting').then((m) => m.EditReporting),
@@ -34,6 +34,21 @@ export const routes: Routes = [
     path: 'ip-profile',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/ip-profile/ip-profile').then((m) => m.IpProfile),
+  },
+  {
+    path: 'ip-list',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/ip-list/ip-list').then((m) => m.IpList),
+  },
+  {
+    path: 'ip-edit',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/ip-edit/ip-edit').then((m) => m.IpEdit),
+  },
+  {
+    path: 'ip-edit/:id',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/ip-edit/ip-edit').then((m) => m.IpEdit),
   },
   { path: '**', redirectTo: 'dashboard' },
 ];

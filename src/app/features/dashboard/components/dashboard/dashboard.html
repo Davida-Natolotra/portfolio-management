@@ -6,7 +6,7 @@
 </div>
 
 <div class="stat-grid">
-  @for (stat of stats; track stat.label) {
+  @for (stat of stats(); track stat.label) {
     <p-card styleClass="stat-card">
       <div class="stat-inner">
         <div class="stat-info">
@@ -18,77 +18,45 @@
         </div>
       </div>
       <div class="stat-footer" [style.background]="stat.color">
-        <span>% change</span>
-        <i class="pi pi-trending-up"></i>
+        <span>Total count</span>
+        <i class="pi pi-chart-bar"></i>
       </div>
     </p-card>
   }
 </div>
 
-<div class="content-grid">
-  <p-card header="Sales Analytics" styleClass="chart-card">
-    <p-chart type="line" [data]="salesChartData" [options]="salesChartOptions" height="320px" />
-  </p-card>
+<p-card header="Reporting Overview">
+  <p-table
+    [value]="reports()"
+    [paginator]="true"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    styleClass="p-datatable-striped">
 
-  <div class="side-cards">
-    <p-card styleClass="quarter-card">
-      <div class="month-row">
-        <div>
-          <h4>$256.23</h4>
-          <p class="text-muted">This Month</p>
-        </div>
-        <span class="p-tag p-tag-success">+20%</span>
-      </div>
-      <p-chart type="bar" [data]="{
-        labels: ['W1','W2','W3','W4'],
-        datasets: [{ data: [55,70,40,85], backgroundColor: '#3f51b5' }]
-      }" [options]="{ plugins: { legend: { display: false } }, maintainAspectRatio: false }" height="120px" />
-    </p-card>
-
-    <p-card styleClass="quarter-card">
-      <h6 class="text-muted">This Quarter</h6>
-      <h4>$39,452.50</h4>
-      <div class="progress-row">
-        <span>Online Revenue</span>
-        <span class="f-right">80%</span>
-      </div>
-      <p-progressBar [value]="80" styleClass="mb-2" />
-      <div class="progress-row">
-        <span>Offline Revenue</span>
-        <span class="f-right">50%</span>
-      </div>
-      <p-progressBar [value]="50" styleClass="progress-green" />
-    </p-card>
-  </div>
-</div>
-
-<p-card header="Projects" styleClass="projects-card">
-  <p-table [value]="projects" [tableStyle]="{'min-width': '50rem'}">
     <ng-template #header>
       <tr>
-        <th>Assigned</th>
-        <th>Name</th>
-        <th>Due Date</th>
-        <th class="text-right">Priority</th>
+        <th pSortableColumn="ip_detail.ip_name">IP Name <p-sortIcon field="ip_detail.ip_name" /></th>
+        <th>Region</th>
+        <th>District</th>
+        <th>Technical Area</th>
       </tr>
     </ng-template>
-    <ng-template #body let-project>
+
+    <ng-template #body let-r>
       <tr>
-        <td>
-          <div class="assignee">
-            <div class="mini-avatar">{{ project.assignee.slice(0,2) }}</div>
-            <div>
-              <div class="fw-600">{{ project.assignee }}</div>
-              <div class="text-muted small">{{ project.role }}</div>
-            </div>
-          </div>
-        </td>
-        <td>{{ project.name }}</td>
-        <td>{{ project.due }}</td>
-        <td class="text-right">
-          <p-tag [value]="project.priority" [severity]="project.status" />
-        </td>
+        <td>{{ r.ip_detail?.ip_name }}</td>
+        <td>{{ r.framework?.region_detail?.name ?? '—' }}</td>
+        <td>{{ r.framework?.district_detail?.name ?? '—' }}</td>
+        <td>{{ r.framework?.technical_area_detail?.name ?? '—' }}</td>
       </tr>
     </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="4" class="text-center text-color-secondary py-6">No reports found.</td>
+      </tr>
+    </ng-template>
+
   </p-table>
 </p-card>

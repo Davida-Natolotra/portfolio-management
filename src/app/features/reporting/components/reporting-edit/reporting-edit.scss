@@ -1,0 +1,41 @@
+.reporting-edit-card {
+  width: 100%;
+  padding: 1rem;
+
+  @media (min-width: 640px) {
+    padding: 1.5rem;
+  }
+}
+
+::ng-deep {
+  .reporting-edit-card p-stepper {
+    width: 100%;
+  }
+
+  // Allow the step list to scroll horizontally on small screens
+  .reporting-edit-card .p-stepper-list {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+
+  // Prevent step items from shrinking below their content
+  .reporting-edit-card .p-step {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  // Textareas fill their container
+  .reporting-edit-card textarea {
+    width: 100%;
+  }
+
+  // PrimeNG inputs fill their column on mobile
+  .reporting-edit-card p-autocomplete,
+  .reporting-edit-card p-inputnumber,
+  .reporting-edit-card p-select,
+  .reporting-edit-card p-datepicker {
+    width: 100%;
+  }
+}

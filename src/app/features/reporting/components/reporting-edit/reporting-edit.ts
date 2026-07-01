@@ -1,11 +1,13 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import {
   AbstractControl,
   FormBuilder,
   FormsModule,
   ReactiveFormsModule,
   ValidationErrors,
-  Validators
+  Validators,
 } from '@angular/forms';
 import { StepperModule } from 'primeng/stepper';
 import { ButtonModule } from 'primeng/button';
@@ -22,13 +24,13 @@ import {
   action_status,
   activity_status,
   AFGHealthStrategyInterface,
-  List15Interface,
   AreaCoopInterface,
   DataSourceIndicatorsInterface,
+  List15Interface,
   OrganisationUnitInterface,
   PerformanceIndicatorsInterface,
   SensInterface,
-  TechnicalAreaInterface
+  TechnicalAreaInterface,
 } from '../../models/reporting.interface';
 
 function genderSumValidator(control: AbstractControl): ValidationErrors | null {
@@ -68,6 +70,9 @@ function populationReachedValidator(control: AbstractControl): ValidationErrors 
   styleUrl: './reporting-edit.scss',
 })
 export class ReportingEdit implements OnInit, OnDestroy {
+  @Input() reportingId: string | null = null;
+
+  private router = inject(Router);
   // Autocomplete data lists
   regionList: OrganisationUnitInterface[] = [];
   regionSuggestions: OrganisationUnitInterface[] = [];
@@ -104,10 +109,16 @@ export class ReportingEdit implements OnInit, OnDestroy {
     {
       // A - BLOC 1: FRAMEWORK & FUNDING
       region: [null as OrganisationUnitInterface | null, Validators.required],
-      district: [{ value: null as OrganisationUnitInterface | null, disabled: true }, Validators.required],
+      district: [
+        { value: null as OrganisationUnitInterface | null, disabled: true },
+        Validators.required,
+      ],
       technical_area: [null as TechnicalAreaInterface | null, Validators.required],
       area_of_cooperation: [null as AreaCoopInterface | null, Validators.required],
-      type_of_contribution: [{ value: null as AreaCoopInterface | null, disabled: true }, Validators.required],
+      type_of_contribution: [
+        { value: null as AreaCoopInterface | null, disabled: true },
+        Validators.required,
+      ],
       assigned_funding: [null as number | null, [Validators.required, Validators.min(0)]],
 
       // B - BLOC 2: ALIGNEMENT STRATÉGIQUE
@@ -262,24 +273,71 @@ export class ReportingEdit implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    if (this.reportingForm.valid) {
-      const raw = this.reportingForm.getRawValue();
-      const payload = {
-        ...raw,
-        region: raw.region?.id ?? raw.region,
-        district: raw.district?.id ?? raw.district,
-        technical_area: raw.technical_area?.id ?? raw.technical_area,
-        area_of_cooperation: raw.area_of_cooperation?.id ?? raw.area_of_cooperation,
-        type_of_contribution: raw.type_of_contribution?.id ?? raw.type_of_contribution,
-        alignment_AFGH: raw.alignment_AFGH?.id ?? raw.alignment_AFGH,
-        performance_indicator: raw.performance_indicator?.id ?? raw.performance_indicator,
-        sens: raw.sens?.id ?? raw.sens,
-        data_source_indicator: raw.data_source_indicator?.id ?? raw.data_source_indicator,
-      };
-      console.log(payload);
-    } else {
+    if (!this.reportingForm.valid) {
       this.reportingForm.markAllAsTouched();
+      return;
     }
+    if (!this.reportingId) return;
+
+    const r = this.reportingForm.getRawValue();
+    const id = this.reportingId;
+
+    const formatDate = (d: Date | null): string =>
+      d ? d.toISOString().split('T')[0] : '';
+
+    forkJoin([
+      this.dataAPI.submitFrameworkFunding({
+        reporting: id,
+        region: r.region?.id,
+        district: r.district?.id,
+        technical_area: r.technical_area?.id,
+        area: r.area_of_cooperation?.id,
+        contribution: r.type_of_contribution?.id,
+        assigned_funding: r.assigned_funding,
+      }),
+      this.dataAPI.submitStrategicAlignment({
+        reporting: id,
+        alignment: r.alignment_mou,
+        reason_alignment: r.reason_alignment,
+        alignment_AFG_Health: r.alignment_AFGH?.id,
+      }),
+      this.dataAPI.submitMonitoringPerformance({
+        reporting: id,
+        performance_indicator: r.performance_indicator?.id,
+        sens: r.sens?.id,
+        data_source_indicator: r.data_source_indicator?.id,
+        annual_target: r.annual_target,
+        result_achieved: r.result_achieved,
+        achievement_rate: r.achievement_rate,
+        performance_status: r.achievement_rate,
+        total_population_covered: r.total_population_covered ?? 0,
+        total_population_reached: r.total_population_reached,
+        total_population_covered_female: r.total_population_covered_female,
+        total_population_reached_male: r.total_population_covered_male,
+      }),
+      this.dataAPI.submitQualitativeAnalysis({
+        reporting: id,
+        interventions_key_success: r.key_success,
+        interventions_bottleneck_factors: r.bottleneck_factors,
+      }),
+      this.dataAPI.submitRiskMatrix({
+        reporting: id,
+        risk_identified: r.risk_alert_identified,
+        impact: r.impact,
+        probability: r.probability,
+        risk_score: r.risk_score,
+        risk_level: r.risk_level,
+        measure_mitigation_proposed: r.measure_mitigation_proposed,
+        main_responsible: r.main_responsible,
+        due_date: formatDate(r.due_date as unknown as Date),
+        action_status: r.action_status,
+      }),
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => this.router.navigate(['/reporting']),
+        error: (err) => console.error('Submission failed', err),
+      });
   }
 
   private loadStaticData(): void {
@@ -287,43 +345,71 @@ export class ReportingEdit implements OnInit, OnDestroy {
     this.metadataAPI
       .getRegion()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => { this.regionList = d; this.regionSuggestions = [...d]; this.regionLoading = false; });
+      .subscribe((d) => {
+        this.regionList = d;
+        this.regionSuggestions = [...d];
+        this.regionLoading = false;
+      });
 
     this.technicalAreaLoading = true;
     this.metadataAPI
       .getTechnicalArea()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => { this.technicalAreaList = d; this.technicalAreaSuggestions = [...d]; this.technicalAreaLoading = false; });
+      .subscribe((d) => {
+        this.technicalAreaList = d;
+        this.technicalAreaSuggestions = [...d];
+        this.technicalAreaLoading = false;
+      });
 
     this.areaCoopLoading = true;
     this.metadataAPI
       .getAreaOfCooperation()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => { this.areaCoopList = d; this.areaCoopSuggestions = [...d]; this.areaCoopLoading = false; });
+      .subscribe((d) => {
+        this.areaCoopList = d;
+        this.areaCoopSuggestions = [...d];
+        this.areaCoopLoading = false;
+      });
 
     this.afgHealthLoading = true;
     this.metadataAPI
       .getAFGHealthStrategy()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => { this.afgHealthList = d; this.afgHealthSuggestions = [...d]; this.afgHealthLoading = false; });
+      .subscribe((d) => {
+        this.afgHealthList = d;
+        this.afgHealthSuggestions = [...d];
+        this.afgHealthLoading = false;
+      });
 
     this.sensLoading = true;
     this.metadataAPI
       .getSensList()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => { this.sensList = d; this.sensSuggestions = [...d]; this.sensLoading = false; });
+      .subscribe((d) => {
+        this.sensList = d;
+        this.sensSuggestions = [...d];
+        this.sensLoading = false;
+      });
 
     this.mouIndicatorsLoading = true;
     this.metadataAPI
       .getMOUIndicators()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => { this.mouIndicatorsList = d; this.mouIndicatorsSuggestions = [...d]; this.mouIndicatorsLoading = false; });
+      .subscribe((d) => {
+        this.mouIndicatorsList = d;
+        this.mouIndicatorsSuggestions = [...d];
+        this.mouIndicatorsLoading = false;
+      });
 
     this.dataSourceLoading = true;
     this.metadataAPI
       .getDataSourceIndicator()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((d) => { this.dataSourceList = d; this.dataSourceSuggestions = [...d]; this.dataSourceLoading = false; });
+      .subscribe((d) => {
+        this.dataSourceList = d;
+        this.dataSourceSuggestions = [...d];
+        this.dataSourceLoading = false;
+      });
     this.metadataAPI
       .getList15()
       .pipe(takeUntil(this.destroy$))
@@ -360,7 +446,10 @@ export class ReportingEdit implements OnInit, OnDestroy {
           this.metadataAPI
             .getDistrict(region.id)
             .pipe(takeUntil(this.destroy$))
-            .subscribe((d) => { this.districtList = d; this.districtLoading = false; });
+            .subscribe((d) => {
+              this.districtList = d;
+              this.districtLoading = false;
+            });
         }
       });
 
@@ -376,9 +465,12 @@ export class ReportingEdit implements OnInit, OnDestroy {
             .getPopulationDistrict(district.id)
             .pipe(takeUntil(this.destroy$))
             .subscribe((d) => {
-              (f.get('total_population_covered')! as AbstractControl<any>).setValue(d.nb_population, {
-                emitEvent: false,
-              });
+              (f.get('total_population_covered')! as AbstractControl<any>).setValue(
+                d.nb_population,
+                {
+                  emitEvent: false,
+                },
+              );
             });
         } else {
           f.get('total_population_covered')!.setValue(null, { emitEvent: false });
@@ -403,7 +495,10 @@ export class ReportingEdit implements OnInit, OnDestroy {
           this.metadataAPI
             .getTypeOfContribution(areaCoop.id)
             .pipe(takeUntil(this.destroy$))
-            .subscribe((d) => { this.typeContribList = d; this.typeContribLoading = false; });
+            .subscribe((d) => {
+              this.typeContribList = d;
+              this.typeContribLoading = false;
+            });
         }
       });
 
@@ -413,7 +508,7 @@ export class ReportingEdit implements OnInit, OnDestroy {
       const result = (f.get('result_achieved')!.value as unknown as number) ?? 0;
       const rate = target > 0 ? Math.round((result / target) * 100) : 0;
       const status =
-        target > 0 ? (rate >= 100 ? 'On Track' : rate >= 70 ? 'At Risk' : 'Off Track') : '';
+        target > 0 ? (rate >= 90 ? 'Satisfaisante' : rate >= 75 ? 'Modérée' : 'Critique') : '';
       f.get('achievement_rate')!.setValue(rate, { emitEvent: false });
       f.get('performance_status')!.setValue(status, { emitEvent: false });
     };

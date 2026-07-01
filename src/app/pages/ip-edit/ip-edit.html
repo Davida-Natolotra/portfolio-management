@@ -1,0 +1,120 @@
+<div class="page-header">
+  <h4>{{ isEdit ? 'Edit IP Identifier' : 'New IP Identifier' }}</h4>
+  <p class="breadcrumb-text">
+    <i class="pi pi-home"></i> Home /
+    <a class="cursor-pointer" (click)="cancel()">IP Identifiers</a> /
+    {{ isEdit ? 'Edit' : 'New' }}
+  </p>
+</div>
+
+<p-card>
+  <form (ngSubmit)="onSubmit()" [formGroup]="form" class="ip-form">
+
+    <div class="form-grid">
+
+      <!-- IP Name -->
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">IP Name <span class="text-red-500">*</span></label>
+        <input formControlName="ip_name" pInputText placeholder="Enter IP name" />
+        @if (form.get('ip_name')?.invalid && form.get('ip_name')?.touched) {
+          <small class="text-red-500">IP name is required (max 50 characters).</small>
+        }
+      </div>
+
+      <!-- Donor -->
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Donor <span class="text-red-500">*</span></label>
+        <input formControlName="donor" pInputText placeholder="Enter donor name" />
+        @if (form.get('donor')?.invalid && form.get('donor')?.touched) {
+          <small class="text-red-500">Donor is required (max 50 characters).</small>
+        }
+      </div>
+
+      <!-- Budget -->
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Budget <span class="text-red-500">*</span></label>
+        <p-inputnumber
+          [fluid]="true"
+          [min]="0"
+          currency="USD"
+          formControlName="budget"
+          mode="currency"
+          placeholder="Enter budget amount" />
+        @if (form.get('budget')?.invalid && form.get('budget')?.touched) {
+          <small class="text-red-500">A valid budget amount is required.</small>
+        }
+      </div>
+
+      <!-- Version -->
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Version <span class="text-red-500">*</span></label>
+        <p-datepicker
+          [fluid]="true"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          formControlName="version"
+          placeholder="DD/MM/YYYY" />
+        @if (form.get('version')?.invalid && form.get('version')?.touched) {
+          <small class="text-red-500">Version date is required.</small>
+        }
+      </div>
+
+      <!-- Period Start -->
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Period Start <span class="text-red-500">*</span></label>
+        <p-datepicker
+          [fluid]="true"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          formControlName="period_start"
+          placeholder="DD/MM/YYYY" />
+        @if (form.get('period_start')?.invalid && form.get('period_start')?.touched) {
+          <small class="text-red-500">Period start is required.</small>
+        }
+      </div>
+
+      <!-- Period End -->
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Period End <span class="text-red-500">*</span></label>
+        <p-datepicker
+          [fluid]="true"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          formControlName="period_end"
+          placeholder="DD/MM/YYYY" />
+        @if (form.get('period_end')?.invalid && form.get('period_end')?.touched) {
+          <small class="text-red-500">Period end is required.</small>
+        }
+      </div>
+
+      <!-- Activity Name -->
+      <div class="flex flex-col gap-1 col-span-2">
+        <label class="font-medium text-sm">Activity Name <span class="text-red-500">*</span></label>
+        <textarea formControlName="activity_name" pTextarea placeholder="Describe the activity" rows="3"></textarea>
+        @if (form.get('activity_name')?.invalid && form.get('activity_name')?.touched) {
+          <small class="text-red-500">Activity name is required.</small>
+        }
+      </div>
+
+      <!-- Description -->
+      <div class="flex flex-col gap-1 col-span-2">
+        <label class="font-medium text-sm">Description <span class="text-red-500">*</span></label>
+        <textarea formControlName="description" pTextarea placeholder="Enter a description" rows="4"></textarea>
+        @if (form.get('description')?.invalid && form.get('description')?.touched) {
+          <small class="text-red-500">Description is required.</small>
+        }
+      </div>
+
+    </div>
+
+    <div class="flex justify-end gap-2 pt-4">
+      <p-button (onClick)="cancel()" label="Cancel" severity="secondary" type="button" />
+      <p-button
+        [loading]="submitting()"
+        [label]="isEdit ? 'Save changes' : 'Create'"
+        icon="pi pi-check"
+        type="submit" />
+    </div>
+
+  </form>
+</p-card>

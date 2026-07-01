@@ -30,14 +30,13 @@ html {
 }
 
 body {
-  margin: 0px;
   min-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   background-color: var(--body-bg);
   font-weight: normal;
   color: var(--body-text-color);
-  padding: 1rem;
+
 }
 
 .card {
@@ -47,4 +46,23 @@ body {
   border-radius: 10px;
   margin-bottom: 1rem;
 }
+
+
+.page-header {
+  margin-bottom: 24px;
+
+  h4 {
+    margin: 0 0 4px;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .breadcrumb-text {
+    margin: 0;
+    color: #888;
+    font-size: 12px;
+  }
+}
+
+
 /* You can add global styles to this file, and also import other style files */

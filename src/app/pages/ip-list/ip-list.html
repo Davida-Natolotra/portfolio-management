@@ -1,0 +1,57 @@
+<div class="page-header">
+  <h4>IP Identifiers</h4>
+  <p class="breadcrumb-text"><i class="pi pi-home"></i> Home / IP Identifiers</p>
+</div>
+
+<p-card>
+  <p-table
+    [paginator]="true"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [value]="ips()"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    styleClass="p-datatable-striped">
+
+    <ng-template #caption>
+      <div class="table-caption">
+        <span class="font-semibold text-lg">IP List</span>
+        <p-button (onClick)="newIp()" icon="pi pi-plus" label="New IP" size="small" />
+      </div>
+    </ng-template>
+
+    <ng-template #header>
+      <tr>
+        <th pSortableColumn="ip_name">IP Name <p-sortIcon field="ip_name" /></th>
+        <th pSortableColumn="activity_name">Activity <p-sortIcon field="activity_name" /></th>
+        <th pSortableColumn="donor">Donor <p-sortIcon field="donor" /></th>
+        <th pSortableColumn="budget">Budget <p-sortIcon field="budget" /></th>
+        <th pSortableColumn="period_start">Period Start <p-sortIcon field="period_start" /></th>
+        <th pSortableColumn="period_end">Period End <p-sortIcon field="period_end" /></th>
+        <th style="width: 8rem">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-ip>
+      <tr>
+        <td>{{ ip.ip_name }}</td>
+        <td>{{ ip.activity_name }}</td>
+        <td>{{ ip.donor }}</td>
+        <td>{{ ip.budget | number }}</td>
+        <td>{{ ip.period_start }}</td>
+        <td>{{ ip.period_end }}</td>
+        <td>
+          <div class="action-btns">
+            <p-button (onClick)="editIp(ip.id)" [text]="true" icon="pi pi-pencil" size="small" />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="7" class="text-center text-color-secondary py-6">No IP identifiers found.</td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+</p-card>

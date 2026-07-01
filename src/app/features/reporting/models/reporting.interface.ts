@@ -7,19 +7,36 @@ export interface ReportingInterface {
 
 export interface IPProfileInterface {
   id: string;
-  name: string;
+  ip_name: string;
   activity_name: string;
   description: string;
   period_start: string;
   period_end: string;
-  budget: Number;
+  budget: number;
   donor: string;
   version: string;
 }
 
 export interface ReportingPeriod {
+  id: number;
   name: string;
-  year: Number;
+  year: number;
+}
+
+export interface ReportingListItem {
+  id: number;
+  ip_detail: { id: string; ip_name: string };
+  period_detail: ReportingPeriod;
+  framework?: {
+    region_detail?: { id: string; name: string };
+    district_detail?: { id: string; name: string };
+    technical_area_detail?: { id: string; name: string };
+  };
+}
+
+export interface IPIdentifierListInterface {
+  id: string;
+  ip_name: string;
 }
 
 export interface FrameworkFundingInterface {

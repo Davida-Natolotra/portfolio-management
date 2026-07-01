@@ -1,3 +1,8 @@
-<app-appbar-component></app-appbar-component>
-
-<router-outlet />
+@if (!isAuthRoute()) {
+  <app-appbar-component></app-appbar-component>
+  <main class="page-content">
+    <router-outlet />
+  </main>
+} @else {
+  <router-outlet />
+}

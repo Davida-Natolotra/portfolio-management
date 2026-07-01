@@ -69,4 +69,8 @@ export class ReportingMetadataApi {
   getList15(): Observable<List15Interface[]> {
     return this.http.get<List15Interface[]>(`${this.backendUrl}/list-1-5/`);
   }
+
+  getReportingPeriods(): Observable<import('../../models/reporting.interface').ReportingPeriod[]> {
+    return this.http.get<import('../../models/reporting.interface').ReportingPeriod[]>(`${this.backendUrl}/reporting-periods/`);
+  }
 }

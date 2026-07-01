@@ -1,91 +1,94 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, computed, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
-import { InputTextModule } from 'primeng/inputtext';
+import { DialogModule } from 'primeng/dialog';
+import { Select } from 'primeng/select';
+import { ReportingDataApi } from '../../api/data/reporting-data.api';
+import { ReportingMetadataApi } from '../../api/metadata/reporting-metadata.api';
+import {
+  IPIdentifierListInterface,
+  ReportingListItem,
+  ReportingPeriod,
+} from '../../models/reporting.interface';
 
 @Component({
   selector: 'app-reporting-list',
-  imports: [TableModule, CardModule, ButtonModule, TagModule, InputTextModule],
+  imports: [TableModule, CardModule, ButtonModule, DialogModule, Select, ReactiveFormsModule],
   templateUrl: './reporting-list.html',
   styleUrl: './reporting-list.scss',
 })
-export class ReportingList {
-  users = [
-    {
-      name: 'John Doe',
-      position: 'Software Engineer',
-      office: 'New York',
-      age: 28,
-      start: '2019/04/25',
-      salary: '$89,000',
-    },
-    {
-      name: 'Jane Smith',
-      position: 'Product Manager',
-      office: 'London',
-      age: 34,
-      start: '2017/01/12',
-      salary: '$120,000',
-    },
-    {
-      name: 'Bob Johnson',
-      position: 'Designer',
-      office: 'San Francisco',
-      age: 26,
-      start: '2021/07/03',
-      salary: '$76,000',
-    },
-    {
-      name: 'Alice Brown',
-      position: 'DevOps Engineer',
-      office: 'Berlin',
-      age: 31,
-      start: '2018/11/20',
-      salary: '$95,000',
-    },
-    {
-      name: 'Charlie Wilson',
-      position: 'Data Scientist',
-      office: 'Toronto',
-      age: 29,
-      start: '2020/03/15',
-      salary: '$105,000',
-    },
-    {
-      name: 'Eva Martinez',
-      position: 'QA Engineer',
-      office: 'Madrid',
-      age: 27,
-      start: '2022/02/08',
-      salary: '$72,000',
-    },
-    {
-      name: 'David Lee',
-      position: 'Backend Developer',
-      office: 'Seoul',
-      age: 32,
-      start: '2016/09/01',
-      salary: '$98,000',
-    },
-    {
-      name: 'Sophie Turner',
-      position: 'UI/UX Designer',
-      office: 'Paris',
-      age: 30,
-      start: '2019/12/11',
-      salary: '$84,000',
-    },
-  ];
+export class ReportingList implements OnInit {
+  private dataApi = inject(ReportingDataApi);
+  private metadataApi = inject(ReportingMetadataApi);
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
 
-  statuses: { label: string; value: 'success' | 'danger' | 'warn' }[] = [
-    { label: 'Active', value: 'success' },
-    { label: 'Inactive', value: 'danger' },
-    { label: 'Pending', value: 'warn' },
-  ];
+  reports = signal<ReportingListItem[]>([]);
+  periods = signal<ReportingPeriod[]>([]);
+  ipIdentifiers = signal<IPIdentifierListInterface[]>([]);
+  dialogVisible = signal(false);
+  submitting = signal(false);
 
-  getStatus(index: number) {
-    return this.statuses[index % 3];
+  periodNames = computed(() => [...new Map(this.periods().map(p => [p.name, p])).values()]);
+  periodYears = computed(() => {
+    const name = this.form.get('period_name')?.value as string | null;
+    const filtered = name ? this.periods().filter(p => p.name === name) : this.periods();
+    return [...new Map(filtered.map(p => [p.year, p])).values()];
+  });
+
+  form = this.fb.group({
+    ip_id: [null as string | null, Validators.required],
+    period_name: [null as string | null, Validators.required],
+    period_year: [null as number | null, Validators.required],
+  });
+
+  ngOnInit(): void {
+    this.loadReports();
+  }
+
+  openNewReport(): void {
+    this.form.reset();
+    this.dialogVisible.set(true);
+    if (this.periods().length === 0) {
+      this.metadataApi.getReportingPeriods().subscribe(p => this.periods.set(p));
+    }
+    if (this.ipIdentifiers().length === 0) {
+      this.dataApi.getIPIdentifiers().subscribe(ips => this.ipIdentifiers.set(ips));
+    }
+  }
+
+  onPeriodNameChange(): void {
+    this.form.get('period_year')?.reset();
+  }
+
+  onSubmit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const { ip_id, period_name, period_year } = this.form.getRawValue();
+    const period = this.periods().find(p => p.name === period_name && p.year === period_year);
+    if (!period) return;
+
+    this.submitting.set(true);
+    this.dataApi.createReporting({ ip_id: ip_id!, report_period: period.id }).subscribe({
+      next: item => {
+        this.reports.update(list => [item, ...list]);
+        this.dialogVisible.set(false);
+        this.submitting.set(false);
+      },
+      error: () => this.submitting.set(false),
+    });
+  }
+
+  editReport(id: number): void {
+    this.router.navigate(['/edit-report', id]);
+  }
+
+  private loadReports(): void {
+    this.dataApi.getReportingList().subscribe(list => this.reports.set(list));
   }
 }
