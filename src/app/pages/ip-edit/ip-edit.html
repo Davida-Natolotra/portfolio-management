@@ -8,6 +8,11 @@
 </div>
 
 <p-card>
+  @if (loading()) {
+    <div class="form-loading">
+      <p-progressSpinner styleClass="w-3rem h-3rem" />
+    </div>
+  } @else {
   <form (ngSubmit)="onSubmit()" [formGroup]="form" class="ip-form">
 
     <div class="form-grid">
@@ -117,4 +122,5 @@
     </div>
 
   </form>
+  }
 </p-card>

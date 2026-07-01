@@ -5,6 +5,7 @@
 
 <p-card>
   <p-table
+    [loading]="loading()"
     [paginator]="true"
     [rows]="10"
     [showCurrentPageReport]="true"
@@ -58,63 +59,69 @@
   [style]="{ width: '28rem' }"
   header="New Report">
 
-  <form (ngSubmit)="onSubmit()" [formGroup]="form" class="dialog-form">
-
-    <div class="flex flex-col gap-1">
-      <label class="font-medium text-sm">IP Identifier <span class="text-red-500">*</span></label>
-      <p-select
-        [fluid]="true"
-        [options]="ipIdentifiers()"
-        formControlName="ip_id"
-        optionLabel="ip_name"
-        optionValue="id"
-        placeholder="Select an IP" />
-      @if (form.get('ip_id')?.invalid && form.get('ip_id')?.touched) {
-        <small class="text-red-500">IP identifier is required.</small>
-      }
+  @if (metadataLoading()) {
+    <div class="dialog-loading">
+      <p-progressSpinner styleClass="w-3rem h-3rem" />
     </div>
+  } @else {
+    <form (ngSubmit)="onSubmit()" [formGroup]="form" class="dialog-form">
 
-    <div class="flex flex-col gap-1">
-      <label class="font-medium text-sm">Reporting Period — Name <span class="text-red-500">*</span></label>
-      <p-select
-        (onChange)="onPeriodNameChange()"
-        [fluid]="true"
-        [options]="periodNames()"
-        formControlName="period_name"
-        optionLabel="name"
-        optionValue="name"
-        placeholder="Select a period name" />
-      @if (form.get('period_name')?.invalid && form.get('period_name')?.touched) {
-        <small class="text-red-500">Period name is required.</small>
-      }
-    </div>
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">IP Identifier <span class="text-red-500">*</span></label>
+        <p-select
+          [fluid]="true"
+          [options]="ipIdentifiers()"
+          formControlName="ip_id"
+          optionLabel="ip_name"
+          optionValue="id"
+          placeholder="Select an IP" />
+        @if (form.get('ip_id')?.invalid && form.get('ip_id')?.touched) {
+          <small class="text-red-500">IP identifier is required.</small>
+        }
+      </div>
 
-    <div class="flex flex-col gap-1">
-      <label class="font-medium text-sm">Reporting Period — Year <span class="text-red-500">*</span></label>
-      <p-select
-        [fluid]="true"
-        [options]="periodYears()"
-        formControlName="period_year"
-        optionLabel="year"
-        optionValue="year"
-        placeholder="Select a year" />
-      @if (form.get('period_year')?.invalid && form.get('period_year')?.touched) {
-        <small class="text-red-500">Period year is required.</small>
-      }
-    </div>
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Reporting Period — Name <span class="text-red-500">*</span></label>
+        <p-select
+          (onChange)="onPeriodNameChange()"
+          [fluid]="true"
+          [options]="periodNames()"
+          formControlName="period_name"
+          optionLabel="name"
+          optionValue="name"
+          placeholder="Select a period name" />
+        @if (form.get('period_name')?.invalid && form.get('period_name')?.touched) {
+          <small class="text-red-500">Period name is required.</small>
+        }
+      </div>
 
-    <div class="flex justify-end gap-2 pt-2">
-      <p-button
-        (onClick)="dialogVisible.set(false)"
-        label="Cancel"
-        severity="secondary"
-        type="button" />
-      <p-button
-        [loading]="submitting()"
-        icon="pi pi-check"
-        label="Create"
-        type="submit" />
-    </div>
+      <div class="flex flex-col gap-1">
+        <label class="font-medium text-sm">Reporting Period — Year <span class="text-red-500">*</span></label>
+        <p-select
+          [fluid]="true"
+          [options]="periodYears()"
+          formControlName="period_year"
+          optionLabel="year"
+          optionValue="year"
+          placeholder="Select a year" />
+        @if (form.get('period_year')?.invalid && form.get('period_year')?.touched) {
+          <small class="text-red-500">Period year is required.</small>
+        }
+      </div>
 
-  </form>
+      <div class="flex justify-end gap-2 pt-2">
+        <p-button
+          (onClick)="dialogVisible.set(false)"
+          label="Cancel"
+          severity="secondary"
+          type="button" />
+        <p-button
+          [loading]="submitting()"
+          icon="pi pi-check"
+          label="Create"
+          type="submit" />
+      </div>
+
+    </form>
+  }
 </p-dialog>

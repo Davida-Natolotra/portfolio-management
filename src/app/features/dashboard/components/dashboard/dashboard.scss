@@ -1,4 +1,12 @@
 
+.stat-grid-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+  margin-bottom: 20px;
+}
+
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

@@ -18,14 +18,15 @@
 
               <!-- Region -->
               <div class="flex flex-col gap-1">
-                <label class="font-medium text-sm">Region <span class="text-red-500">*</span></label>
+                <label class="font-medium text-sm">Region <span class="text-red-500">*</span>
+                  @if (regionLoading) { <i class="pi pi-spin pi-spinner text-xs"></i> }
+                </label>
                 <p-autocomplete
                   (completeMethod)="searchRegion($event)"
                   [dropdown]="true"
                   [emptyMessage]="regionLoading ? 'Loading...' : 'No results found'"
                   [fluid]="true"
                   [forceSelection]="true"
-
                   [minLength]="0"
                   [suggestions]="regionSuggestions"
                   optionLabel="name"
@@ -38,7 +39,9 @@
 
               <!-- District — disabled until a region is selected -->
               <div class="flex flex-col gap-1">
-                <label class="font-medium text-sm">District <span class="text-red-500">*</span></label>
+                <label class="font-medium text-sm">District <span class="text-red-500">*</span>
+                  @if (districtLoading) { <i class="pi pi-spin pi-spinner text-xs"></i> }
+                </label>
                 <p-autocomplete
                   (completeMethod)="searchDistrict($event)"
                   [dropdown]="true"
@@ -57,7 +60,9 @@
 
               <!-- Technical Area -->
               <div class="flex flex-col gap-1">
-                <label class="font-medium text-sm">Technical Area <span class="text-red-500">*</span></label>
+                <label class="font-medium text-sm">Technical Area <span class="text-red-500">*</span>
+                  @if (technicalAreaLoading) { <i class="pi pi-spin pi-spinner text-xs"></i> }
+                </label>
                 <p-autocomplete
                   (completeMethod)="searchTechnicalArea($event)"
                   [dropdown]="true"
@@ -76,7 +81,9 @@
 
               <!-- Area of Cooperation -->
               <div class="flex flex-col gap-1">
-                <label class="font-medium text-sm">Area of Cooperation <span class="text-red-500">*</span></label>
+                <label class="font-medium text-sm">Area of Cooperation <span class="text-red-500">*</span>
+                  @if (areaCoopLoading) { <i class="pi pi-spin pi-spinner text-xs"></i> }
+                </label>
                 <p-autocomplete
                   (completeMethod)="searchAreaCoop($event)"
                   [dropdown]="true"
@@ -95,7 +102,9 @@
 
               <!-- Type of Contribution — disabled until area_of_cooperation is selected -->
               <div class="flex flex-col gap-1">
-                <label class="font-medium text-sm">Type of Contribution <span class="text-red-500">*</span></label>
+                <label class="font-medium text-sm">Type of Contribution <span class="text-red-500">*</span>
+                  @if (typeContribLoading) { <i class="pi pi-spin pi-spinner text-xs"></i> }
+                </label>
                 <p-autocomplete
                   (completeMethod)="searchTypeContrib($event)"
                   [dropdown]="true"
@@ -171,7 +180,9 @@
               <!-- Alignment AFG Health Strategy -->
               <div class="flex flex-col gap-1">
                 <label class="font-medium text-sm">Alignment AFG Health Strategy <span
-                  class="text-red-500">*</span></label>
+                  class="text-red-500">*</span>
+                  @if (afgHealthLoading) { <i class="pi pi-spin pi-spinner text-xs"></i> }
+                </label>
                 <p-autocomplete
                   (completeMethod)="searchAfgHealth($event)"
                   [dropdown]="true"
@@ -203,7 +214,9 @@
 
               <!-- Performance Indicator -->
               <div class="flex flex-col gap-1">
-                <label class="font-medium text-sm">Performance Indicator <span class="text-red-500">*</span></label>
+                <label class="font-medium text-sm">Performance Indicator <span class="text-red-500">*</span>
+                  @if (mouIndicatorsLoading) { <i class="pi pi-spin pi-spinner text-xs"></i> }
+                </label>
                 <p-autocomplete
                   (completeMethod)="searchMouIndicators($event)"
                   [dropdown]="true"
@@ -246,7 +259,9 @@
 
               <!-- SENS -->
               <div class="flex flex-col gap-1">
-                <label class="font-medium text-sm">SENS <span class="text-red-500">*</span></label>
+                <label class="font-medium text-sm">SENS <span class="text-red-500">*</span>
+                  @if (sensLoading) { <i class="pi pi-spin pi-spinner text-xs"></i> }
+                </label>
                 <p-autocomplete
                   (completeMethod)="searchSens($event)"
                   [dropdown]="true"
@@ -265,7 +280,9 @@
 
               <!-- Data Source Indicator -->
               <div class="flex flex-col gap-1">
-                <label class="font-medium text-sm">Data Source Indicator <span class="text-red-500">*</span></label>
+                <label class="font-medium text-sm">Data Source Indicator <span class="text-red-500">*</span>
+                  @if (dataSourceLoading) { <i class="pi pi-spin pi-spinner text-xs"></i> }
+                </label>
                 <p-autocomplete
                   (completeMethod)="searchDataSource($event)"
                   [dropdown]="true"
@@ -563,7 +580,13 @@
             </div>
             <div class="flex pt-6 justify-between">
               <p-button (onClick)="activateCallback(4)" icon="pi pi-arrow-left" label="Back" severity="secondary" />
-              <p-button icon="pi pi-check" iconPos="right" label="Submit" severity="success" type="submit" />
+              <p-button
+                [loading]="submitting"
+                icon="pi pi-check"
+                iconPos="right"
+                label="Submit"
+                severity="success"
+                type="submit" />
             </div>
           </ng-template>
         </p-step-panel>

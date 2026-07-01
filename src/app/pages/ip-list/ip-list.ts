@@ -18,9 +18,13 @@ export class IpList implements OnInit {
   private router = inject(Router);
 
   ips = signal<IPProfileInterface[]>([]);
+  loading = signal(true);
 
   ngOnInit(): void {
-    this.api.getAll().subscribe(list => this.ips.set(list));
+    this.api.getAll().subscribe(list => {
+      this.ips.set(list);
+      this.loading.set(false);
+    });
   }
 
   newIp(): void {

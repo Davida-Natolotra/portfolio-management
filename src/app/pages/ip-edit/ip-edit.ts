@@ -7,6 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputNumber } from 'primeng/inputnumber';
 import { DatePicker } from 'primeng/datepicker';
 import { Textarea } from 'primeng/textarea';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { IpIdentifierApi } from '../../core/api/ip-identifier.api';
 
 @Component({
@@ -19,6 +20,7 @@ import { IpIdentifierApi } from '../../core/api/ip-identifier.api';
     InputNumber,
     DatePicker,
     Textarea,
+    ProgressSpinnerModule,
   ],
   templateUrl: './ip-edit.html',
   styleUrl: './ip-edit.scss',
@@ -31,6 +33,7 @@ export class IpEdit implements OnInit {
 
   editId = signal<string | null>(null);
   submitting = signal(false);
+  loading = signal(false);
 
   form = this.fb.group({
     ip_name: ['', [Validators.required, Validators.maxLength(50)]],
@@ -51,7 +54,9 @@ export class IpEdit implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.editId.set(id);
+      this.loading.set(true);
       this.api.getAll().subscribe(list => {
+        this.loading.set(false);
         const ip = list.find(i => i.id === id);
         if (ip) {
           this.form.patchValue({

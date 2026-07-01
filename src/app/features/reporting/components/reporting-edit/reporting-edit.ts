@@ -73,6 +73,7 @@ export class ReportingEdit implements OnInit, OnDestroy {
   @Input() reportingId: string | null = null;
 
   private router = inject(Router);
+  submitting = false;
   // Autocomplete data lists
   regionList: OrganisationUnitInterface[] = [];
   regionSuggestions: OrganisationUnitInterface[] = [];
@@ -285,6 +286,7 @@ export class ReportingEdit implements OnInit, OnDestroy {
     const formatDate = (d: Date | null): string =>
       d ? d.toISOString().split('T')[0] : '';
 
+    this.submitting = true;
     forkJoin([
       this.dataAPI.submitFrameworkFunding({
         reporting: id,
@@ -336,7 +338,10 @@ export class ReportingEdit implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => this.router.navigate(['/reporting']),
-        error: (err) => console.error('Submission failed', err),
+        error: (err) => {
+          this.submitting = false;
+          console.error('Submission failed', err);
+        },
       });
   }
 

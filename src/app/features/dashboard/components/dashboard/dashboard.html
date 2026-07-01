@@ -5,38 +5,85 @@
   </div>
 </div>
 
-<div class="stat-grid">
-  @for (stat of stats(); track stat.label) {
-    <p-card styleClass="stat-card">
-      <div class="stat-inner">
-        <div class="stat-info">
-          <h3 [style.color]="stat.color">{{ stat.value }}</h3>
-          <span class="stat-label">{{ stat.label }}</span>
+@if (loading()) {
+  <div class="stat-grid-loading">
+    <p-progressSpinner styleClass="w-3rem h-3rem" />
+  </div>
+} @else {
+  <div class="stat-grid">
+    @for (stat of stats(); track stat.label) {
+      <p-card styleClass="stat-card">
+        <div class="stat-inner">
+          <div class="stat-info">
+            <h3 [style.color]="stat.color">{{ stat.value }}</h3>
+            <span class="stat-label">{{ stat.label }}</span>
+          </div>
+          <div [style.background]="stat.bg" [style.color]="stat.color" class="stat-icon">
+            <i [class]="stat.icon"></i>
+          </div>
         </div>
-        <div class="stat-icon" [style.background]="stat.bg" [style.color]="stat.color">
-          <i [class]="stat.icon"></i>
+        <div [style.background]="stat.color" class="stat-footer">
+          <span>Total count</span>
+          <i class="pi pi-chart-bar"></i>
         </div>
+      </p-card>
+    }
+  </div>
+}
+
+
+<div class="content-grid">
+  <p-card header="Sales Analytics" styleClass="chart-card">
+    <p-chart [data]="salesChartData" [options]="salesChartOptions" height="320px" type="line" />
+  </p-card>
+
+  <div class="side-cards">
+    <p-card styleClass="quarter-card">
+      <div class="month-row">
+        <div>
+          <h4>$256.23</h4>
+          <p class="text-muted">This Month</p>
+        </div>
+        <span class="p-tag p-tag-success">+20%</span>
       </div>
-      <div class="stat-footer" [style.background]="stat.color">
-        <span>Total count</span>
-        <i class="pi pi-chart-bar"></i>
-      </div>
+      <p-chart [data]="{
+        labels: ['W1','W2','W3','W4'],
+        datasets: [{ data: [55,70,40,85], backgroundColor: '#3f51b5' }]
+      }" [options]="{ plugins: { legend: { display: false } }, maintainAspectRatio: false }" height="120px" type="bar" />
     </p-card>
-  }
+
+    <p-card styleClass="quarter-card">
+      <h6 class="text-muted">This Quarter</h6>
+      <h4>$39,452.50</h4>
+      <div class="progress-row">
+        <span>Online Revenue</span>
+        <span class="f-right">80%</span>
+      </div>
+      <p-progressBar [value]="80" styleClass="mb-2" />
+      <div class="progress-row">
+        <span>Offline Revenue</span>
+        <span class="f-right">50%</span>
+      </div>
+      <p-progressBar [value]="50" styleClass="progress-green" />
+    </p-card>
+  </div>
 </div>
 
 <p-card header="Reporting Overview">
   <p-table
-    [value]="reports()"
+    [loading]="loading()"
     [paginator]="true"
     [rows]="10"
     [showCurrentPageReport]="true"
+    [value]="reports()"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     styleClass="p-datatable-striped">
 
     <ng-template #header>
       <tr>
-        <th pSortableColumn="ip_detail.ip_name">IP Name <p-sortIcon field="ip_detail.ip_name" /></th>
+        <th pSortableColumn="ip_detail.ip_name">IP Name
+          <p-sortIcon field="ip_detail.ip_name" />
+        </th>
         <th>Region</th>
         <th>District</th>
         <th>Technical Area</th>
@@ -54,7 +101,7 @@
 
     <ng-template #emptymessage>
       <tr>
-        <td colspan="4" class="text-center text-color-secondary py-6">No reports found.</td>
+        <td class="text-center text-color-secondary py-6" colspan="4">No reports found.</td>
       </tr>
     </ng-template>
 
